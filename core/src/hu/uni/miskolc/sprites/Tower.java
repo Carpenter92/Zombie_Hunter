@@ -19,7 +19,7 @@ import hu.uni.miskolc.screens.GameScreen;
 
 public class Tower implements Disposable{
 
-    private static final int B2D_WIDTH = 35;
+    private static final int B2D_WIDTH = 33;
     //private static final int B2D_HEIGHT = 35;
     private static final float SCALE = 0.30f;
 
@@ -50,8 +50,11 @@ public class Tower implements Disposable{
             float x = current.getBox2dBody().getPosition().x;
             float y = current.getBox2dBody().getPosition().y;
             if ((((x - this.box2dBody.getPosition().x)*(x - this.box2dBody.getPosition().x)) + ((y - this.box2dBody.getPosition().y)*(y - this.box2dBody.getPosition().y))) < range*range)    {
-                screen.toRemove.add(current.getBox2dBody());
-                screen.getHud().setMoney(screen.getHud().getMoney()+20);
+                current.getShot(20);
+                if (current.getHealth() <= 0) {
+                    screen.toRemove.add(current.getBox2dBody());
+                    screen.getHud().setMoney(screen.getHud().getMoney() + 10);
+                }
             }
         }
     }

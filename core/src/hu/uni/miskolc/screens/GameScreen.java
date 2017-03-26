@@ -143,9 +143,10 @@ public class GameScreen extends InputAdapter implements Screen{
     }
 
     private void updateZombies(float delta)    {
-        if (timePassed >= 2 && zombiesSpawned < 8) {
+        if (timePassed > 2 && zombiesSpawned < 8) {
             createZombie();
-            timePassed = 0;
+            //TODO temp solution
+            if (towers.size == 0) timePassed = 0;
         }
         for (Zombie individualZombie : zombies) {
             individualZombie.updatePath();
@@ -157,8 +158,11 @@ public class GameScreen extends InputAdapter implements Screen{
         for (Tower individualTower : towers) {
             individualTower.updateSpritePosition(camera.position.x, camera.position.y);
             individualTower.draw(Gdx.graphics.getDeltaTime());
-            individualTower.setZombies(zombies);
-            individualTower.checkForZombiesInRange(this);
+            if (timePassed > 2) {
+                timePassed = 0;
+                individualTower.setZombies(zombies);
+                individualTower.checkForZombiesInRange(this);
+            }
         }
     }
 

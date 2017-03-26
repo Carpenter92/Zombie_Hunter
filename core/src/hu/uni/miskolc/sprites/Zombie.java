@@ -3,6 +3,7 @@ package hu.uni.miskolc.sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,6 +34,8 @@ public class Zombie implements Disposable {
     private TextureAtlas atlas;
     private Animation<TextureAtlas.AtlasRegion> animation;
     private float elapsedTime;
+    private int health;
+    private BitmapFont font;
 
     private World world;
     public Body box2dBody;
@@ -48,6 +51,8 @@ public class Zombie implements Disposable {
     public Zombie(World world, SpriteBatch batch, RectangleMapObject spawnPoint)  {
         this.world = world;
         this.batch = batch;
+        health = 100;
+        font = new BitmapFont();
 
         directions = new Array<Direction>();
         directions.add(Direction.UP);
@@ -139,10 +144,19 @@ public class Zombie implements Disposable {
         if (elapsedTime > 1.2f)
             elapsedTime = 0f;
         batch.draw(animation.getKeyFrame(elapsedTime,true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);
+        font.draw(batch, health+"", xPos, yPos);
     }
 
     @Override
     public void dispose() {
         atlas.dispose();
+    }
+
+    public void getShot(int damage)   {
+        health -= damage;
+    }
+
+    public int getHealth() {
+        return health;
     }
 }
