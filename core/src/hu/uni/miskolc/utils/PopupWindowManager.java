@@ -60,6 +60,7 @@ public class PopupWindowManager {
                 public void tap(InputEvent event, float x, float y, int count, int button) {
                     super.tap(event, x, y, count, button);
                     stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
+                    saveFile.flush();
                     MenuScreen.buttonClick.play(ZombieGame.volume);
                 }
             });
@@ -96,6 +97,7 @@ public class PopupWindowManager {
             });
         } else  {
             stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
+            saveFile.flush();
         }
     }
 
