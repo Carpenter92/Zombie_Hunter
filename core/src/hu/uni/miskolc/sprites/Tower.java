@@ -51,6 +51,7 @@ public class Tower implements Disposable{
             float y = current.getBox2dBody().getPosition().y;
             if ((((x - this.box2dBody.getPosition().x)*(x - this.box2dBody.getPosition().x)) + ((y - this.box2dBody.getPosition().y)*(y - this.box2dBody.getPosition().y))) < range*range)    {
                 screen.toRemove.add(current.getBox2dBody());
+                screen.getHud().setMoney(screen.getHud().getMoney()+20);
             }
         }
     }

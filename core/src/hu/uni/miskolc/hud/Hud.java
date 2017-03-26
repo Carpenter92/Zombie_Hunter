@@ -29,7 +29,7 @@ public class Hud implements Disposable {
     public Hud(SpriteBatch batch)   {
         wave = 1;
         timeLeft = 60;
-        money = 150;
+        money = 100;
 
         viewPort = new FitViewport(ZombieGame.WIDTH, ZombieGame.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewPort, batch);
@@ -50,6 +50,36 @@ public class Hud implements Disposable {
         table.add(moneyLabel).expandX();
 
         stage.addActor(table);
+    }
+
+    public void update(float delta)    {
+        moneyLabel.setText(money+"");
+        timeLeftLabel.setText(timeLeft+"");
+        waveLabel.setText(wave+"");
+    }
+
+    public int getWave() {
+        return wave;
+    }
+
+    public void setWave(int wave) {
+        this.wave = wave;
+    }
+
+    public int getTimeLeft() {
+        return timeLeft;
+    }
+
+    public void setTimeLeft(int timeLeft) {
+        this.timeLeft = timeLeft;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     public Stage getStage() {
