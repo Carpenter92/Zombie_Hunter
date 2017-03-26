@@ -83,7 +83,7 @@ public class GameScreen extends InputAdapter implements Screen{
         hud = new Hud(batch);
 
         //Loading in the map based on the saveFile
-        map = new TmxMapLoader().load("maps/map"+ mapNumber +".tmx");
+        map = new TmxMapLoader().load("maps/map"+ mapNumber +"new.tmx");
         spawnPoint = (RectangleMapObject) map.getLayers().get(2).getObjects().get(0);
         mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / ZombieGame.PPM);
         batch.setProjectionMatrix(hud.getStage().getCamera().combined);
@@ -95,6 +95,7 @@ public class GameScreen extends InputAdapter implements Screen{
         box2DDebugRenderer.SHAPE_STATIC.set(1,0,0,1);
         Box2DObjectCreator B2Dcreator = new Box2DObjectCreator(world);
         B2Dcreator.createStaticObjects(map.getLayers().get(0), "walls");
+        B2Dcreator.createStaticObjects(map.getLayers().get(1), "walls");
 
         //Creating the empty zombies and towers arrays
         zombies = new Array<Zombie>();
@@ -113,6 +114,7 @@ public class GameScreen extends InputAdapter implements Screen{
         mapRenderer.render();
 
         //Hud
+        hud.update(delta);
         hud.getStage().draw();
 
         //Box2D (Debug Lines)
@@ -121,7 +123,7 @@ public class GameScreen extends InputAdapter implements Screen{
 
         handleInput(delta);
         batch.begin();
-            updateZombies();
+            updateZombies(delta);
             createTower();
             updateTowers();
         batch.end();
@@ -132,14 +134,15 @@ public class GameScreen extends InputAdapter implements Screen{
         zombiesSpawned++;
     }
     private void createTower()  {
-        if (Gdx.input.justTouched())    {
+        if (Gdx.input.justTouched() && hud.getMoney() >= 50)    {
+            hud.setMoney(hud.getMoney()-50);
             towers.add(new Tower(world, batch,
                     (int) (Gdx.input.getX() + (camera.position.x*ZombieGame.PPM) - ZombieGame.WIDTH/2 ),
                     (int) ( (ZombieGame.HEIGHT-Gdx.input.getY()) + (camera.position.y*ZombieGame.PPM)- ZombieGame.HEIGHT/2 ) ) );
         }
     }
 
-    private void updateZombies()    {
+    private void updateZombies(float delta)    {
         if (timePassed >= 2 && zombiesSpawned < 8) {
             createZombie();
             timePassed = 0;
@@ -147,7 +150,7 @@ public class GameScreen extends InputAdapter implements Screen{
         for (Zombie individualZombie : zombies) {
             individualZombie.updatePath();
             individualZombie.updateSpritePosition(camera.position.x, camera.position.y);
-            individualZombie.draw(Gdx.graphics.getDeltaTime());
+            individualZombie.draw(delta);
         }
     }
     private void updateTowers() {
@@ -187,10 +190,10 @@ public class GameScreen extends InputAdapter implements Screen{
             camera.translate(0, 5*delta);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
             camera.translate(0, -5*delta);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-            Gdx.app.exit();
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
             zombiesSpawned = 0;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+            screenManager.setScreen(new MenuScreen(screenManager, batch));
 
         if (camera.position.x < (0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM)
             camera.position.set(((0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM), camera.position.y, 0);
@@ -235,5 +238,9 @@ public class GameScreen extends InputAdapter implements Screen{
         world.dispose();
         box2DDebugRenderer.dispose();
         hud.dispose();
+    }
+
+    public Hud getHud() {
+        return hud;
     }
 }
