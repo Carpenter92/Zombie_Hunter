@@ -228,6 +228,8 @@ public class GameScreen extends InputAdapter implements Screen{
 
     @Override
     public void dispose() {
+        for (Zombie current : zombies) current.dispose();
+        for (Tower current : towers) current.dispose();
         map.dispose();
         mapRenderer.dispose();
         world.dispose();

@@ -3,7 +3,6 @@ package hu.uni.miskolc.utils;
 
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -25,7 +24,6 @@ public class Box2DObjectCreator {
     public void createStaticObjects(MapLayer mapLayer, String layerName)   {
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
-        Polyline line = new Polyline();
         FixtureDef fdef = new FixtureDef();
         Body body;
 
@@ -42,5 +40,6 @@ public class Box2DObjectCreator {
             Fixture fixture = body.createFixture(fdef);
             fixture.setUserData(layerName);
         }
+        shape.dispose();
     }
 }
