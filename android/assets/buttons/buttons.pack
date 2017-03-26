@@ -1,0 +1,68 @@
+
+buttons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+newgamebutton
+  rotate: false
+  xy: 1, 291
+  size: 348, 142
+  orig: 348, 142
+  offset: 0, 0
+  index: -1
+newgamebuttonpressed
+  rotate: false
+  xy: 1, 147
+  size: 348, 142
+  orig: 348, 142
+  offset: 0, 0
+  index: -1
+continuebutton
+  rotate: false
+  xy: 351, 290
+  size: 343, 143
+  orig: 343, 143
+  offset: 0, 0
+  index: -1
+continuebuttonpressed
+  rotate: false
+  xy: 1, 2
+  size: 343, 143
+  orig: 343, 143
+  offset: 0, 0
+  index: -1
+continuebuttoninactive
+  rotate: false
+  xy: 351, 145
+  size: 342, 143
+  orig: 342, 143
+  offset: 0, 0
+  index: -1
+exitbutton
+  rotate: false
+  xy: 696, 291
+  size: 280, 142
+  orig: 280, 142
+  offset: 0, 0
+  index: -1
+exitbuttonpressed
+  rotate: false
+  xy: 346, 1
+  size: 280, 142
+  orig: 280, 142
+  offset: 0, 0
+  index: -1
+optionsiconbutton
+  rotate: false
+  xy: 628, 1
+  size: 142, 142
+  orig: 142, 142
+  offset: 0, 0
+  index: -1
+optionsiconbuttonpressed
+  rotate: false
+  xy: 695, 146
+  size: 141, 142
+  orig: 141, 142
+  offset: 0, 0
+  index: -1

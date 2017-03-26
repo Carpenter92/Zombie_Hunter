@@ -1,0 +1,26 @@
+
+levelthumbnails.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+map1thumbnail
+  rotate: false
+  xy: 1, 309
+  size: 254, 152
+  orig: 254, 152
+  offset: 0, 0
+  index: -1
+map2thumbnail
+  rotate: false
+  xy: 1, 155
+  size: 254, 152
+  orig: 254, 152
+  offset: 0, 0
+  index: -1
+map3thumbnail
+  rotate: false
+  xy: 1, 1
+  size: 254, 152
+  orig: 254, 152
+  offset: 0, 0
+  index: -1

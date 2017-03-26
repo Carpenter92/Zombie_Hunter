@@ -1,0 +1,47 @@
+
+optionsbuttons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+audiooff
+  rotate: false
+  xy: 1, 273
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+audioon
+  rotate: false
+  xy: 1, 137
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+backbutton
+  rotate: false
+  xy: 135, 273
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+backbuttonpressed
+  rotate: false
+  xy: 1, 1
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+musicoff
+  rotate: false
+  xy: 135, 137
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+musicon
+  rotate: false
+  xy: 269, 273
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
