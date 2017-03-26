@@ -45,7 +45,7 @@ public class Tower implements Disposable{
         createAnimation();
     }
 
-    public void checkForZombies(GameScreen screen) {
+    public void checkForZombiesInRange(GameScreen screen) {
         for (Zombie current : zombies) {
             float x = current.getBox2dBody().getPosition().x;
             float y = current.getBox2dBody().getPosition().y;

@@ -155,7 +155,7 @@ public class GameScreen extends InputAdapter implements Screen{
             individualTower.updateSpritePosition(camera.position.x, camera.position.y);
             individualTower.draw(Gdx.graphics.getDeltaTime());
             individualTower.setZombies(zombies);
-            individualTower.checkForZombies(this);
+            individualTower.checkForZombiesInRange(this);
         }
     }
 
