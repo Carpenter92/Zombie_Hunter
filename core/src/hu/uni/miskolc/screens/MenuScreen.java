@@ -49,6 +49,7 @@ public class MenuScreen extends ScreenAdapter {
     public MenuScreen(ZombieGame screenManager, SpriteBatch batch)  {
         MenuScreen.screenManager = screenManager;
         this.batch = batch;
+        assetManager = new AssetManager();
     }
 
     @Override
