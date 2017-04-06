@@ -1,6 +1,7 @@
 package hu.uni.miskolc.sprites;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -32,6 +33,7 @@ public class Tower implements Disposable{
     private World world;
     private Body box2dBody;
     private Array<Zombie> zombies;
+    private Sound shootSound;
 
     private int atlasRegionWidth, atlasRegionHeight, xPos, yPos;
 
@@ -43,17 +45,23 @@ public class Tower implements Disposable{
         range = (int) (200 / ZombieGame.PPM);
         defineTower();
         createAnimation(assetManager);
+        shootSound = assetManager.get("sounds/shoot.mp3");
     }
 
     public void checkForZombiesInRange(GameScreen screen) {
-        for (Zombie current : zombies) {
-            float x = current.getBox2dBody().getPosition().x;
-            float y = current.getBox2dBody().getPosition().y;
-            if ((((x - this.box2dBody.getPosition().x)*(x - this.box2dBody.getPosition().x)) + ((y - this.box2dBody.getPosition().y)*(y - this.box2dBody.getPosition().y))) < range*range)    {
-                current.getShot(20);
-                if (current.getHealth() <= 0) {
-                    screen.toRemove.add(current.getBox2dBody());
-                    screen.getHud().setMoney(screen.getHud().getMoney() + 10);
+        if (elapsedTime > 1f && zombies.size != 0) {
+            elapsedTime = 0f;
+            for (Zombie current : zombies) {
+                float x = current.getBox2dBody().getPosition().x;
+                float y = current.getBox2dBody().getPosition().y;
+                if ((((x - this.box2dBody.getPosition().x) * (x - this.box2dBody.getPosition().x)) + ((y - this.box2dBody.getPosition().y) * (y - this.box2dBody.getPosition().y))) < range * range) {
+                    current.getShot(20);
+                    shootSound.play(ZombieGame.volume);
+                    if (current.getHealth() <= 0) {
+                        screen.toRemove.add(current.getBox2dBody());
+                        screen.getHud().setMoney(screen.getHud().getMoney() + 10);
+                    }
+                    break;
                 }
             }
         }
@@ -95,8 +103,6 @@ public class Tower implements Disposable{
 
     public void draw(float delta)  {
         elapsedTime+=delta;
-        if (elapsedTime > 1f)
-            elapsedTime = 0f;
         batch.draw(animation.getKeyFrame(elapsedTime,true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);
     }
 
