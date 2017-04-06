@@ -21,8 +21,10 @@ public class ZombieContactListener implements ContactListener {
         if (contact.isTouching()) {
             Fixture fixtureA = contact.getFixtureA();
             Fixture fixtureB = contact.getFixtureB();
-            if (fixtureA.getUserData().equals("tower") && fixtureB.getUserData().equals("zombie"))
+            if (fixtureA.getUserData().equals("base") && fixtureB.getUserData().equals("zombie")) {
                 screen.toRemove.add(fixtureB.getBody());
+                screen.getHud().decreaseLives();
+            }
         }
     }
 

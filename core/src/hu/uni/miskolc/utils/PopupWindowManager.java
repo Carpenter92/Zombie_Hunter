@@ -1,7 +1,7 @@
 package hu.uni.miskolc.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -22,17 +22,19 @@ public class PopupWindowManager {
 
     private Stage stage;
     private Preferences saveFile;
+    private AssetManager assetManager;
 
-    public PopupWindowManager(Stage stage, Preferences saveFile) {
+    public PopupWindowManager(Stage stage, Preferences saveFile, AssetManager assetManager) {
         this.stage = stage;
         this.saveFile = saveFile;
+        this.assetManager = assetManager;
     }
 
     public void createOptionsPopup()    {
         if (stage.getActors().size == 5 || stage.getActors().size == 10) {
-            TextureAtlas optionsButtons = new TextureAtlas(Gdx.files.internal("buttons/optionsbuttons.pack"));
+            TextureAtlas optionsButtons = assetManager.get("buttons/optionsbuttons.pack");
 
-            Image popupWindow = new Image(new Texture(Gdx.files.internal("background/optionspopup.png")));
+            Image popupWindow = new Image((Texture) assetManager.get("background/optionspopup.png"));
             ImageButton musicButton = new ImageButton(new TextureRegionDrawable(optionsButtons.getRegions().get(4)),
                     new TextureRegionDrawable(optionsButtons.getRegions().get(5)), new TextureRegionDrawable(optionsButtons.getRegions().get(5)));
             ImageButton soundButton = new ImageButton(new TextureRegionDrawable(optionsButtons.getRegions().get(0)),
@@ -103,10 +105,10 @@ public class PopupWindowManager {
 
     public void createLevelSelectorPopup(final ZombieGame screenManager, final SpriteBatch batch)   {
 
-        TextureAtlas levelButtons = new TextureAtlas(Gdx.files.internal("buttons/levelthumbnails/levelthumbnails.pack"));
-        TextureAtlas optionsButtons = new TextureAtlas(Gdx.files.internal("buttons/optionsbuttons.pack"));
+        TextureAtlas levelButtons = assetManager.get("buttons/levelthumbnails/levelthumbnails.pack");
+        TextureAtlas optionsButtons = assetManager.get("buttons/optionsbuttons.pack");
 
-        Image popupWindow = new Image(new Texture(Gdx.files.internal("background/levelpopup.png")));
+        Image popupWindow = new Image((Texture) assetManager.get("background/levelpopup.png"));
         ImageButton firstButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(levelButtons.getRegions().get(0))));
         ImageButton secondButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(levelButtons.getRegions().get(1))));
         ImageButton thirdButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(levelButtons.getRegions().get(2))));

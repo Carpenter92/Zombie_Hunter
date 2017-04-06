@@ -123,6 +123,7 @@ public class GameScreen extends InputAdapter implements Screen {
         Box2DObjectCreator B2Dcreator = new Box2DObjectCreator(world);
         B2Dcreator.createStaticObjects(map.getLayers().get(0), "walls");
         B2Dcreator.createStaticObjects(map.getLayers().get(1), "walls");
+        B2Dcreator.createStaticObjects(map.getLayers().get(3), "base");
     }
 
     @Override

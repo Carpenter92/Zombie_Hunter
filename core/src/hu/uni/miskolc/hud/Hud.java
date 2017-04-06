@@ -19,16 +19,16 @@ public class Hud implements Disposable {
     private Viewport viewPort;
 
     private int wave;
-    private int timeLeft;
+    private int livesLeft;
     private int money;
 
     private Label waveLabel;
-    private Label timeLeftLabel;
+    private Label livesLeftLabel;
     private Label moneyLabel;
 
     public Hud(SpriteBatch batch)   {
         wave = 1;
-        timeLeft = 60;
+        livesLeft = 10;
         money = 100;
 
         viewPort = new FitViewport(ZombieGame.WIDTH, ZombieGame.HEIGHT, new OrthographicCamera());
@@ -39,14 +39,14 @@ public class Hud implements Disposable {
         table.setFillParent(true);
 
         waveLabel = new Label(String.format("%01d", wave), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        timeLeftLabel = new Label(String.format("%02d", timeLeft), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        livesLeftLabel = new Label(String.format("%02d", livesLeft), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         moneyLabel = new Label(String.format("%03d", money), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         waveLabel.setFontScale(2.0f);
-        timeLeftLabel.setFontScale(2.0f);
+        livesLeftLabel.setFontScale(2.0f);
         moneyLabel.setFontScale(2.0f);
 
         table.add(waveLabel).expandX();
-        table.add(timeLeftLabel).expandX();
+        table.add(livesLeftLabel).expandX();
         table.add(moneyLabel).expandX();
 
         stage.addActor(table);
@@ -54,7 +54,7 @@ public class Hud implements Disposable {
 
     public void update(float delta)    {
         moneyLabel.setText(money+"");
-        timeLeftLabel.setText(timeLeft+"");
+        livesLeftLabel.setText(livesLeft + "");
         waveLabel.setText(wave+"");
     }
 
@@ -66,12 +66,12 @@ public class Hud implements Disposable {
         this.wave = wave;
     }
 
-    public int getTimeLeft() {
-        return timeLeft;
+    public int getLivesLeft() {
+        return livesLeft;
     }
 
-    public void setTimeLeft(int timeLeft) {
-        this.timeLeft = timeLeft;
+    public void decreaseLives() {
+        livesLeft--;
     }
 
     public int getMoney() {

@@ -63,7 +63,7 @@ public class MenuScreen extends ScreenAdapter {
         //Creating stage for UI elements
         stage = new Stage(new FitViewport(ZombieGame.WIDTH, ZombieGame.HEIGHT), batch);
         Gdx.input.setInputProcessor(stage);
-        popupWindowManager = new PopupWindowManager(stage, saveFile);
+        popupWindowManager = new PopupWindowManager(stage, saveFile, assetManager);
 
         loadAssets();
         createSounds();
@@ -77,6 +77,11 @@ public class MenuScreen extends ScreenAdapter {
         assetManager.load("sounds/buttonclick.mp3", Sound.class);
         assetManager.load("buttons/buttons.pack", TextureAtlas.class);
         assetManager.load("background/menuwall.jpg", Texture.class);
+        assetManager.load("buttons/optionsbuttons.pack", TextureAtlas.class);
+        assetManager.load("background/optionspopup.png", Texture.class);
+        assetManager.load("buttons/levelthumbnails/levelthumbnails.pack", TextureAtlas.class);
+        assetManager.load("buttons/optionsbuttons.pack", TextureAtlas.class);
+        assetManager.load("background/levelpopup.png", Texture.class);
         assetManager.finishLoading();
     }
 
