@@ -3,6 +3,7 @@ package hu.uni.miskolc.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -27,6 +28,7 @@ public class MenuScreen extends ScreenAdapter {
 
     private Stage stage;
     private SpriteBatch batch;
+    private AssetManager assetManager;
 
     private Image background;
     private ImageButton newGameButton;
