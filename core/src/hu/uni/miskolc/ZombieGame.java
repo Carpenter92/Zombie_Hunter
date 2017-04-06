@@ -19,7 +19,8 @@ public class ZombieGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new MenuScreen(this, batch, assetManager));
+		assetManager = new AssetManager();
+		setScreen(new MenuScreen(this, batch));
 	}
 
 	@Override
@@ -31,5 +32,9 @@ public class ZombieGame extends Game {
 	public void dispose() {
 		super.dispose();
 		batch.dispose();
+	}
+
+	public AssetManager getAssetManager() {
+		return assetManager;
 	}
 }

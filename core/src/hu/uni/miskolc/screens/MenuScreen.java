@@ -46,10 +46,10 @@ public class MenuScreen extends ScreenAdapter {
     private boolean isMusicEnabled;
     private boolean areSoundsEnabled;
 
-    public MenuScreen(ZombieGame screenManager, SpriteBatch batch, AssetManager assetManager) {
+    public MenuScreen(ZombieGame screenManager, SpriteBatch batch) {
         MenuScreen.screenManager = screenManager;
         this.batch = batch;
-        this.assetManager = assetManager;
+        this.assetManager = screenManager.getAssetManager();
     }
 
     @Override
@@ -198,6 +198,5 @@ public class MenuScreen extends ScreenAdapter {
         stage.dispose();
         music.dispose();
         buttonClick.dispose();
-        assetManager.dispose();
     }
 }
