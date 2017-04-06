@@ -46,10 +46,10 @@ public class MenuScreen extends ScreenAdapter {
     private boolean isMusicEnabled;
     private boolean areSoundsEnabled;
 
-    public MenuScreen(ZombieGame screenManager, SpriteBatch batch)  {
+    public MenuScreen(ZombieGame screenManager, SpriteBatch batch, AssetManager assetManager) {
         MenuScreen.screenManager = screenManager;
         this.batch = batch;
-        assetManager = new AssetManager();
+        this.assetManager = assetManager;
     }
 
     @Override
@@ -65,10 +65,19 @@ public class MenuScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
         popupWindowManager = new PopupWindowManager(stage, saveFile);
 
-        loadInSounds();
+        loadAssets();
+        createSounds();
         createButtons();
         addButtonsToStage();
         addInputListenersToButtons();
+    }
+
+    private void loadAssets() {
+        assetManager.load("music/menu.mp3", Music.class);
+        assetManager.load("sounds/buttonclick.mp3", Sound.class);
+        assetManager.load("buttons/buttons.pack", TextureAtlas.class);
+        assetManager.load("background/menuwall.jpg", Texture.class);
+        assetManager.finishLoading();
     }
 
     @Override
@@ -85,10 +94,10 @@ public class MenuScreen extends ScreenAdapter {
 
     private void createButtons() {
         //Load in textures from atlas
-        TextureAtlas buttons = new TextureAtlas(Gdx.files.internal("buttons/buttons.pack"));
+        TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
 
         //Wallpaper image
-        background = new Image(new Texture(Gdx.files.internal("background/menuwall.jpg")));
+        background = new Image((Texture) assetManager.get("background/menuwall.jpg"));
         //New Game
         newGameButton = new ImageButton(new TextureRegionDrawable(buttons.getRegions().get(0)),
                 new TextureRegionDrawable(buttons.getRegions().get(1)));
@@ -160,14 +169,14 @@ public class MenuScreen extends ScreenAdapter {
         });
     }
 
-    private void loadInSounds()   {
+    private void createSounds() {
         //Load menu music and button "click" sound
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/menu.mp3"));
+        music = assetManager.get("music/menu.mp3");
         if (isMusicEnabled) {
             music.play();
             music.setLooping(true);
         }
-        buttonClick = Gdx.audio.newSound(Gdx.files.internal("sounds/buttonclick.mp3"));
+        buttonClick = assetManager.get("sounds/buttonclick.mp3");
         if (areSoundsEnabled)
             ZombieGame.volume = 1.0f;
     }
@@ -189,5 +198,6 @@ public class MenuScreen extends ScreenAdapter {
         stage.dispose();
         music.dispose();
         buttonClick.dispose();
+        assetManager.dispose();
     }
 }
