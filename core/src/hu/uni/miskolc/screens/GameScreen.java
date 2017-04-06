@@ -5,10 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -44,6 +46,7 @@ public class GameScreen extends InputAdapter implements Screen{
     private OrthographicCamera camera;
     private Viewport viewport;
     private SpriteBatch batch;
+    private AssetManager assetManager;
 
     //Hud
     private Hud hud;
@@ -64,6 +67,7 @@ public class GameScreen extends InputAdapter implements Screen{
 
     public GameScreen(ZombieGame screenManager, SpriteBatch batch, byte mapNumber) {
         GameScreen.screenManager = screenManager;
+        assetManager = screenManager.getAssetManager();
         this.batch = batch;
         this.mapNumber = mapNumber;
     }
@@ -73,7 +77,8 @@ public class GameScreen extends InputAdapter implements Screen{
         //Checking for saveFile, to load in value
         saveFile = Gdx.app.getPreferences("config");
         saveFile.putInteger("levelNumber", mapNumber);
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/ingame1.mp3"));
+        loadInAssets();
+        music = assetManager.get("music/ingame1.mp3");
         if (saveFile.getBoolean("music", true)) music.play();
 
         //Creating camera and the HUD
@@ -100,6 +105,14 @@ public class GameScreen extends InputAdapter implements Screen{
         //Creating the empty zombies and towers arrays
         zombies = new Array<Zombie>();
         towers = new Array<Tower>();
+    }
+
+    private void loadInAssets() {
+        assetManager.load("music/ingame1.mp3", Music.class);
+        assetManager.load("spritesheets/zombie1/zombie.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/zombie2/zombie.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/tower/tower.pack", TextureAtlas.class);
+        assetManager.finishLoading();
     }
 
     @Override
@@ -130,13 +143,13 @@ public class GameScreen extends InputAdapter implements Screen{
     }
 
     private void createZombie()    {
-        zombies.add(new Zombie(world, batch, spawnPoint));
+        zombies.add(new Zombie(world, batch, spawnPoint, assetManager));
         zombiesSpawned++;
     }
     private void createTower()  {
         if (Gdx.input.justTouched() && hud.getMoney() >= 50)    {
             hud.setMoney(hud.getMoney()-50);
-            towers.add(new Tower(world, batch,
+            towers.add(new Tower(world, batch, assetManager,
                     (int) (Gdx.input.getX() + (camera.position.x*ZombieGame.PPM) - ZombieGame.WIDTH/2 ),
                     (int) ( (ZombieGame.HEIGHT-Gdx.input.getY()) + (camera.position.y*ZombieGame.PPM)- ZombieGame.HEIGHT/2 ) ) );
         }

@@ -1,6 +1,6 @@
 package hu.uni.miskolc.sprites;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -35,14 +35,14 @@ public class Tower implements Disposable{
 
     private int atlasRegionWidth, atlasRegionHeight, xPos, yPos;
 
-    public Tower(World world, SpriteBatch batch, int xPos, int yPos)  {
+    public Tower(World world, SpriteBatch batch, AssetManager assetManager, int xPos, int yPos) {
         this.world = world;
         this.batch = batch;
         this.xPos = xPos;
         this.yPos = yPos;
         range = (int) (200 / ZombieGame.PPM);
         defineTower();
-        createAnimation();
+        createAnimation(assetManager);
     }
 
     public void checkForZombiesInRange(GameScreen screen) {
@@ -77,8 +77,8 @@ public class Tower implements Disposable{
         shape.dispose();
     }
 
-    private void createAnimation() {
-        atlas = new TextureAtlas(Gdx.files.internal("spritesheets/tower/tower.pack"));
+    private void createAnimation(AssetManager assetManager) {
+        atlas = assetManager.get("spritesheets/tower/tower.pack");
         animation = new Animation<TextureAtlas.AtlasRegion>(0.15f, atlas.getRegions());
         atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth()*SCALE);
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight()*SCALE);
@@ -106,6 +106,5 @@ public class Tower implements Disposable{
 
     @Override
     public void dispose() {
-        atlas.dispose();
     }
 }
