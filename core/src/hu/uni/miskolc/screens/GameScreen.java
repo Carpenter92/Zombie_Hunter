@@ -78,9 +78,6 @@ public class GameScreen extends InputAdapter implements Screen {
         //Checking for saveFile, to load in value
         saveFile = Gdx.app.getPreferences("config");
         saveFile.putInteger("levelNumber", mapNumber);
-        loadInAssets();
-        music = assetManager.get("music/ingame1.mp3");
-        if (saveFile.getBoolean("music", true)) music.play();
 
         //Creating camera and the HUD
         camera = new OrthographicCamera();
@@ -88,12 +85,36 @@ public class GameScreen extends InputAdapter implements Screen {
         camera.position.set((ZombieGame.WIDTH / 2 + MAP_OFFSET_X) / ZombieGame.PPM, (ZombieGame.HEIGHT / 2 + MAP_OFFSET_Y) / ZombieGame.PPM, 0);
         hud = new Hud(batch);
 
+        initializeAssets();
+        initializeMap();
+        createBox2DWorld();
+    }
+
+    private void initializeAssets() {
+        assetManager.load("music/ingame1.mp3", Music.class);
+        assetManager.load("sounds/shoot.mp3", Sound.class);
+        assetManager.load("spritesheets/zombie1/zombie.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/zombie2/zombie.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/tower/tower.pack", TextureAtlas.class);
+        assetManager.finishLoading();
+
+        music = assetManager.get("music/ingame1.mp3");
+        if (saveFile.getBoolean("music", true)) music.play();
+
+        //Creating the empty zombies and towers arrays
+        zombies = new Array<Zombie>();
+        towers = new Array<Tower>();
+    }
+
+    private void initializeMap() {
         //Loading in the map based on the saveFile
         map = new TmxMapLoader().load("maps/map" + mapNumber + "new.tmx");
         spawnPoint = (RectangleMapObject) map.getLayers().get(2).getObjects().get(0);
         mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / ZombieGame.PPM);
         batch.setProjectionMatrix(hud.getStage().getCamera().combined);
+    }
 
+    private void createBox2DWorld() {
         //Box2d
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(new ZombieContactListener(this));
@@ -102,33 +123,20 @@ public class GameScreen extends InputAdapter implements Screen {
         Box2DObjectCreator B2Dcreator = new Box2DObjectCreator(world);
         B2Dcreator.createStaticObjects(map.getLayers().get(0), "walls");
         B2Dcreator.createStaticObjects(map.getLayers().get(1), "walls");
-
-        //Creating the empty zombies and towers arrays
-        zombies = new Array<Zombie>();
-        towers = new Array<Tower>();
-    }
-
-    private void loadInAssets() {
-        assetManager.load("music/ingame1.mp3", Music.class);
-        assetManager.load("sounds/shoot.mp3", Sound.class);
-        assetManager.load("spritesheets/zombie1/zombie.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/zombie2/zombie.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/tower/tower.pack", TextureAtlas.class);
-        assetManager.finishLoading();
     }
 
     @Override
     public void render(float delta) {
         clearScreen();
-        //Clearing the array of zombies that collided the previous frame
+        //Clearing the array of zombies that collided with tha base int the previous frame
         clearDeadBodies();
         timePassed += delta;
 
-        //Map
+        //Render map
         mapRenderer.setView(camera);
         mapRenderer.render();
 
-        //Hud
+        //Render hud
         hud.update(delta);
         hud.getStage().draw();
 
@@ -139,7 +147,7 @@ public class GameScreen extends InputAdapter implements Screen {
         handleInput(delta);
         batch.begin();
         updateZombies(delta);
-        createTower();
+        createTowerHandler();
         updateTowers();
         batch.end();
     }
@@ -149,7 +157,7 @@ public class GameScreen extends InputAdapter implements Screen {
         zombiesSpawned++;
     }
 
-    private void createTower() {
+    private void createTowerHandler() {
         if (Gdx.input.justTouched() && hud.getMoney() >= 50) {
             hud.setMoney(hud.getMoney() - 50);
             towers.add(new Tower(world, batch, assetManager,
