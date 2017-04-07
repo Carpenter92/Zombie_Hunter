@@ -93,9 +93,6 @@ public class GameScreen extends InputAdapter implements Screen {
     private void initializeAssets() {
         assetManager.load("music/ingame1.mp3", Music.class);
         assetManager.load("sounds/shoot.mp3", Sound.class);
-        assetManager.load("spritesheets/zombie1/zombie.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/zombie2/zombie.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/tower/tower.pack", TextureAtlas.class);
         assetManager.finishLoading();
 
         music = assetManager.get("music/ingame1.mp3");
@@ -257,6 +254,8 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void dispose() {
+        assetManager.unload("music/ingame1.mp3");
+        assetManager.unload("sounds/shoot.mp3");
         for (Zombie current : zombies) current.dispose();
         for (Tower current : towers) current.dispose();
         map.dispose();
