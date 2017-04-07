@@ -154,7 +154,7 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     private void createZombie() {
-        zombies.add(new Zombie(world, batch, spawnPoint, assetManager));
+        zombies.add(new Zombie(world, batch, spawnPoint));
         zombiesSpawned++;
     }
 

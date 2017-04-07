@@ -1,5 +1,6 @@
 package hu.uni.miskolc.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -86,7 +87,7 @@ public class Tower implements Disposable{
     }
 
     private void createAnimation(AssetManager assetManager) {
-        atlas = assetManager.get("spritesheets/tower/tower.pack");
+        atlas = new TextureAtlas(Gdx.files.internal("spritesheets/tower/tower.pack"));
         animation = new Animation<TextureAtlas.AtlasRegion>(0.15f, atlas.getRegions());
         atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth()*SCALE);
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight()*SCALE);
@@ -112,5 +113,6 @@ public class Tower implements Disposable{
 
     @Override
     public void dispose() {
+        atlas.dispose();
     }
 }

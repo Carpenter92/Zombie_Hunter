@@ -200,6 +200,15 @@ public class MenuScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
+        assetManager.unload("music/menu.mp3");
+        assetManager.unload("sounds/buttonclick.mp3");
+        assetManager.unload("buttons/buttons.pack");
+        assetManager.unload("background/menuwall.jpg");
+        assetManager.unload("buttons/optionsbuttons.pack");
+        assetManager.unload("background/optionspopup.png");
+        assetManager.unload("buttons/levelthumbnails/levelthumbnails.pack");
+        assetManager.unload("buttons/optionsbuttons.pack");
+        assetManager.unload("background/levelpopup.png");
         stage.dispose();
         music.dispose();
         buttonClick.dispose();
