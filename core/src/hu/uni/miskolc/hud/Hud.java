@@ -1,12 +1,18 @@
 package hu.uni.miskolc.hud;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -25,8 +31,10 @@ public class Hud implements Disposable {
     private Label waveLabel;
     private Label livesLeftLabel;
     private Label moneyLabel;
+    private TextureAtlas healthBarAtlas;
+    private Image currentHealth;
 
-    public Hud(SpriteBatch batch)   {
+    public Hud(SpriteBatch batch, AssetManager assetManager) {
         wave = 1;
         livesLeft = 10;
         money = 100;
@@ -38,6 +46,8 @@ public class Hud implements Disposable {
         table.top();
         table.setFillParent(true);
 
+        healthBarAtlas = assetManager.get("spritesheets/healthbar/healthbar.pack");
+        currentHealth = new Image(healthBarAtlas.getRegions().get(livesLeft));
         waveLabel = new Label(String.format("%01d", wave), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         livesLeftLabel = new Label(String.format("%02d", livesLeft), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         moneyLabel = new Label(String.format("%03d", money), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
@@ -45,8 +55,8 @@ public class Hud implements Disposable {
         livesLeftLabel.setFontScale(2.0f);
         moneyLabel.setFontScale(2.0f);
 
+        table.add(currentHealth).expandX();
         table.add(waveLabel).expandX();
-        table.add(livesLeftLabel).expandX();
         table.add(moneyLabel).expandX();
 
         stage.addActor(table);
@@ -72,6 +82,7 @@ public class Hud implements Disposable {
 
     public void decreaseLives() {
         livesLeft--;
+        currentHealth.setDrawable(new SpriteDrawable(new Sprite(healthBarAtlas.getRegions().get(livesLeft))));
     }
 
     public int getMoney() {

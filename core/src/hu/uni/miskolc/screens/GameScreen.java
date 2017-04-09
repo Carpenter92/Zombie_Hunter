@@ -78,14 +78,14 @@ public class GameScreen extends InputAdapter implements Screen {
         //Checking for saveFile, to load in value
         saveFile = Gdx.app.getPreferences("config");
         saveFile.putInteger("levelNumber", mapNumber);
+        initializeAssets();
 
         //Creating camera and the HUD
         camera = new OrthographicCamera();
         viewport = new FitViewport(ZombieGame.WIDTH / ZombieGame.PPM, ZombieGame.HEIGHT / ZombieGame.PPM, camera);
         camera.position.set((ZombieGame.WIDTH / 2 + MAP_OFFSET_X) / ZombieGame.PPM, (ZombieGame.HEIGHT / 2 + MAP_OFFSET_Y) / ZombieGame.PPM, 0);
-        hud = new Hud(batch);
+        hud = new Hud(batch, assetManager);
 
-        initializeAssets();
         initializeMap();
         createBox2DWorld();
     }
@@ -93,6 +93,7 @@ public class GameScreen extends InputAdapter implements Screen {
     private void initializeAssets() {
         assetManager.load("music/ingame1.mp3", Music.class);
         assetManager.load("sounds/shoot.mp3", Sound.class);
+        assetManager.load("spritesheets/healthbar/healthbar.pack", TextureAtlas.class);
         assetManager.finishLoading();
 
         music = assetManager.get("music/ingame1.mp3");
@@ -213,8 +214,10 @@ public class GameScreen extends InputAdapter implements Screen {
             camera.translate(0, 5 * delta);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
             camera.translate(0, -5 * delta);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             zombiesSpawned = 0;
+            hud.setWave(hud.getWave() + 1);
+        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
             screenManager.setScreen(new MenuScreen(screenManager, batch));
 
@@ -254,10 +257,11 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void dispose() {
-        assetManager.unload("music/ingame1.mp3");
-        assetManager.unload("sounds/shoot.mp3");
         for (Zombie current : zombies) current.dispose();
         for (Tower current : towers) current.dispose();
+        assetManager.unload("music/ingame1.mp3");
+        assetManager.unload("sounds/shoot.mp3");
+        assetManager.unload("spritesheets/healthbar/healthbar.pack");
         map.dispose();
         mapRenderer.dispose();
         world.dispose();
