@@ -30,6 +30,7 @@ public class Tower implements Disposable{
     private Animation<TextureAtlas.AtlasRegion> animation;
     private float elapsedTime;
     private int range;
+    private boolean lookingLeft;
 
     private World world;
     private Body box2dBody;
@@ -44,20 +45,27 @@ public class Tower implements Disposable{
         this.xPos = xPos;
         this.yPos = yPos;
         range = (int) (200 / ZombieGame.PPM);
+        lookingLeft = false;
         defineTower();
         createAnimation(assetManager);
         shootSound = assetManager.get("sounds/shoot.mp3");
     }
 
     public void checkForZombiesInRange(GameScreen screen) {
+        //Every second check for zombies
         if (elapsedTime > 1f && zombies.size != 0) {
             elapsedTime = 0f;
+            //all zombies loop
             for (Zombie current : zombies) {
                 float x = current.getBox2dBody().getPosition().x;
                 float y = current.getBox2dBody().getPosition().y;
+                //if zombie is in range, it gets shot
                 if ((((x - this.box2dBody.getPosition().x) * (x - this.box2dBody.getPosition().x)) + ((y - this.box2dBody.getPosition().y) * (y - this.box2dBody.getPosition().y))) < range * range) {
                     current.getShot(20);
+                    if (x > this.box2dBody.getPosition().x && lookingLeft) flipSprite();
+                    if (x < this.box2dBody.getPosition().x && !lookingLeft) flipSprite();
                     shootSound.play(ZombieGame.volume);
+                    //if zombie health <= 0 it dies, gets removed from screen, and money increases
                     if (current.getHealth() <= 0) {
                         screen.toRemove.add(current.getBox2dBody());
                         screen.getHud().setMoney(screen.getHud().getMoney() + 10);
@@ -92,9 +100,18 @@ public class Tower implements Disposable{
         atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth()*SCALE);
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight()*SCALE);
 
+        flipSprite();
+    }
+
+    private void flipSprite() {
         for (TextureRegion temp : atlas.getRegions())    {
             temp.flip(true,false);
         }
+        if (lookingLeft) {
+            lookingLeft = false;
+            return;
+        }
+        lookingLeft = true;
     }
 
     public void updateSpritePosition(float camX, float camY)  {

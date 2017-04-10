@@ -132,8 +132,9 @@ public class PopupWindowManager {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 MenuScreen.buttonClick.play(ZombieGame.volume);
-                screenManager.setScreen(new GameScreen(screenManager, batch, (byte)1));
                 saveFile.putBoolean("continue", true);
+                resetInGameValues();
+                screenManager.setScreen(new GameScreen(screenManager, batch, (byte) 1));
             }
         });
         secondButton.addListener(new ActorGestureListener()  {
@@ -141,8 +142,9 @@ public class PopupWindowManager {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 MenuScreen.buttonClick.play(ZombieGame.volume);
-                screenManager.setScreen(new GameScreen(screenManager, batch, (byte)2));
                 saveFile.putBoolean("continue", true);
+                resetInGameValues();
+                screenManager.setScreen(new GameScreen(screenManager, batch, (byte) 2));
             }
         });
         thirdButton.addListener(new ActorGestureListener()  {
@@ -150,8 +152,9 @@ public class PopupWindowManager {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 MenuScreen.buttonClick.play(ZombieGame.volume);
-                screenManager.setScreen(new GameScreen(screenManager, batch, (byte)3));
                 saveFile.putBoolean("continue", true);
+                resetInGameValues();
+                screenManager.setScreen(new GameScreen(screenManager, batch, (byte)3));
             }
         });
         backButton.addListener(new ActorGestureListener() {
@@ -162,5 +165,11 @@ public class PopupWindowManager {
                 MenuScreen.buttonClick.play(ZombieGame.volume);
             }
         });
+    }
+
+    private void resetInGameValues() {
+        saveFile.putInteger("currentLivesLeft", 10);
+        saveFile.putInteger("currentWave", 1);
+        saveFile.putInteger("currentMoney", 100);
     }
 }
