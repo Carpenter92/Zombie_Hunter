@@ -13,8 +13,8 @@ public class ZombieGame extends Game {
 	public static final float HEIGHT = 720;
 	public static final float PPM = 100;
 
-	private SpriteBatch batch;
-	private AssetManager assetManager;
+    private static SpriteBatch batch;
+    private static AssetManager assetManager;
 
 	@Override
 	public void create () {

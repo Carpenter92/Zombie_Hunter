@@ -36,9 +36,10 @@ public class GameScreen extends InputAdapter implements Screen {
     private static final int MAP_OFFSET_X = 128; //128
     private static final int MAP_OFFSET_Y = 64; //64
 
-    private static ZombieGame screenManager;
+    private ZombieGame screenManager;
     private Music music;
-    private static Preferences saveFile;
+    private Preferences saveFile;
+    private boolean showDebugLines;
     private int currentLevel;
     private float timePassed;
     private int zombiesSpawned;
@@ -67,10 +68,11 @@ public class GameScreen extends InputAdapter implements Screen {
     private Array<Tower> towers;
 
     public GameScreen(ZombieGame screenManager, SpriteBatch batch, byte currentLevel) {
-        GameScreen.screenManager = screenManager;
-        assetManager = screenManager.getAssetManager();
+        this.screenManager = screenManager;
+        this.assetManager = screenManager.getAssetManager();
         this.batch = batch;
         this.currentLevel = currentLevel;
+        showDebugLines = true;
     }
 
     @Override
@@ -144,7 +146,7 @@ public class GameScreen extends InputAdapter implements Screen {
         hud.getStage().draw();
 
         //Box2D (Debug Lines)
-        box2DDebugRenderer.render(world, camera.combined);
+        if (showDebugLines) box2DDebugRenderer.render(world, camera.combined);
         world.step(delta, 6, 2);
 
         handleInput(delta);
@@ -224,6 +226,10 @@ public class GameScreen extends InputAdapter implements Screen {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
             screenManager.setScreen(new MenuScreen(screenManager, batch));
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT) && showDebugLines)
+            showDebugLines = false;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT) && !showDebugLines)
+            showDebugLines = true;
 
         if (camera.position.x < (0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM)
             camera.position.set(((0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM), camera.position.y, 0);

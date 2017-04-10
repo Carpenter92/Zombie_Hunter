@@ -24,7 +24,7 @@ import hu.uni.miskolc.utils.PopupWindowManager;
 
 public class MenuScreen extends ScreenAdapter {
 
-    private static ZombieGame screenManager;
+    private ZombieGame screenManager;
 
     private Stage stage;
     private SpriteBatch batch;
@@ -47,7 +47,7 @@ public class MenuScreen extends ScreenAdapter {
     private boolean areSoundsEnabled;
 
     public MenuScreen(ZombieGame screenManager, SpriteBatch batch) {
-        MenuScreen.screenManager = screenManager;
+        this.screenManager = screenManager;
         this.batch = batch;
         this.assetManager = screenManager.getAssetManager();
     }
@@ -66,7 +66,6 @@ public class MenuScreen extends ScreenAdapter {
         popupWindowManager = new PopupWindowManager(stage, saveFile, assetManager);
 
         loadAssets();
-        createSounds();
         createButtons();
         addButtonsToStage();
         addInputListenersToButtons();
@@ -83,6 +82,15 @@ public class MenuScreen extends ScreenAdapter {
         assetManager.load("buttons/optionsbuttons.pack", TextureAtlas.class);
         assetManager.load("background/levelpopup.png", Texture.class);
         assetManager.finishLoading();
+
+        music = assetManager.get("music/menu.mp3");
+        if (isMusicEnabled) {
+            music.play();
+            music.setLooping(true);
+        }
+        buttonClick = assetManager.get("sounds/buttonclick.mp3");
+        if (areSoundsEnabled)
+            ZombieGame.volume = 1.0f;
     }
 
     @Override
@@ -172,18 +180,6 @@ public class MenuScreen extends ScreenAdapter {
                 }
             }
         });
-    }
-
-    private void createSounds() {
-        //Load menu music and button "click" sound
-        music = assetManager.get("music/menu.mp3");
-        if (isMusicEnabled) {
-            music.play();
-            music.setLooping(true);
-        }
-        buttonClick = assetManager.get("sounds/buttonclick.mp3");
-        if (areSoundsEnabled)
-            ZombieGame.volume = 1.0f;
     }
 
     @Override
