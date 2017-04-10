@@ -39,7 +39,7 @@ public class GameScreen extends InputAdapter implements Screen {
     private static ZombieGame screenManager;
     private Music music;
     private static Preferences saveFile;
-    private byte mapNumber;
+    private int currentLevel;
     private float timePassed;
     private int zombiesSpawned;
 
@@ -66,18 +66,19 @@ public class GameScreen extends InputAdapter implements Screen {
     private Array<Zombie> zombies;
     private Array<Tower> towers;
 
-    public GameScreen(ZombieGame screenManager, SpriteBatch batch, byte mapNumber) {
+    public GameScreen(ZombieGame screenManager, SpriteBatch batch, byte currentLevel) {
         GameScreen.screenManager = screenManager;
         assetManager = screenManager.getAssetManager();
         this.batch = batch;
-        this.mapNumber = mapNumber;
+        this.currentLevel = currentLevel;
     }
 
     @Override
     public void show() {
         //Checking for saveFile, to load in value
         saveFile = Gdx.app.getPreferences("config");
-        saveFile.putInteger("levelNumber", mapNumber);
+        saveFile.putInteger("currentLevel", currentLevel);
+
         initializeAssets();
 
         //Creating camera and the HUD
@@ -85,6 +86,9 @@ public class GameScreen extends InputAdapter implements Screen {
         viewport = new FitViewport(ZombieGame.WIDTH / ZombieGame.PPM, ZombieGame.HEIGHT / ZombieGame.PPM, camera);
         camera.position.set((ZombieGame.WIDTH / 2 + MAP_OFFSET_X) / ZombieGame.PPM, (ZombieGame.HEIGHT / 2 + MAP_OFFSET_Y) / ZombieGame.PPM, 0);
         hud = new Hud(batch, assetManager);
+        hud.setWave(saveFile.getInteger("currentWave", 1));
+        hud.setMoney(saveFile.getInteger("currentMoney", 100));
+        hud.setLivesLeft(saveFile.getInteger("currentLivesLeft", 10));
 
         initializeMap();
         createBox2DWorld();
@@ -106,7 +110,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
     private void initializeMap() {
         //Loading in the map based on the saveFile
-        map = new TmxMapLoader().load("maps/map" + mapNumber + "new.tmx");
+        map = new TmxMapLoader().load("maps/map" + currentLevel + "new.tmx");
         spawnPoint = (RectangleMapObject) map.getLayers().get(2).getObjects().get(0);
         mapRenderer = new OrthogonalTiledMapRenderer(map, 1 / ZombieGame.PPM);
         batch.setProjectionMatrix(hud.getStage().getCamera().combined);
@@ -120,7 +124,7 @@ public class GameScreen extends InputAdapter implements Screen {
         box2DDebugRenderer.SHAPE_STATIC.set(1, 0, 0, 1);
         Box2DObjectCreator B2Dcreator = new Box2DObjectCreator(world);
         B2Dcreator.createStaticObjects(map.getLayers().get(0), "walls");
-        B2Dcreator.createStaticObjects(map.getLayers().get(1), "walls");
+        //B2Dcreator.createStaticObjects(map.getLayers().get(1), "walls");
         B2Dcreator.createStaticObjects(map.getLayers().get(3), "base");
     }
 
@@ -251,6 +255,9 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void hide() {
+        saveFile.putInteger("currentLivesLeft", hud.getLivesLeft());
+        saveFile.putInteger("currentWave", hud.getWave());
+        saveFile.putInteger("currentMoney", hud.getMoney());
         saveFile.flush();
         dispose();
     }

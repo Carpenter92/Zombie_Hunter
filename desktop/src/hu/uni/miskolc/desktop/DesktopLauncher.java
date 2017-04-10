@@ -2,6 +2,8 @@ package hu.uni.miskolc.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+
 import hu.uni.miskolc.ZombieGame;
 
 public class DesktopLauncher {

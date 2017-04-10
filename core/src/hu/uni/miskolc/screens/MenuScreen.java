@@ -168,7 +168,7 @@ public class MenuScreen extends ScreenAdapter {
                 super.tap(event, x, y, count, button);
                 if (hasContinueOption) {
                     buttonClick.play(ZombieGame.volume);
-                    screenManager.setScreen(new GameScreen(screenManager, batch, (byte)saveFile.getInteger("levelNumber")));
+                    screenManager.setScreen(new GameScreen(screenManager, batch, (byte) saveFile.getInteger("currentLevel")));
                 }
             }
         });
