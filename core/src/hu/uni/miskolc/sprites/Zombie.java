@@ -2,12 +2,10 @@ package hu.uni.miskolc.sprites;
 
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -32,7 +30,6 @@ public class Zombie implements Disposable {
     private boolean lookingLeft = false;
 
     private SpriteBatch batch;
-    private TextureAtlas atlas;
     private Animation<TextureAtlas.AtlasRegion> animation;
     private float elapsedTime;
     private int health;
@@ -100,7 +97,7 @@ public class Zombie implements Disposable {
     private void createAnimation(AssetManager assetManager) {
         Random rand = new Random(System.currentTimeMillis());
         int randomNum = rand.nextInt(2) + 1;
-        atlas = assetManager.get("spritesheets/zombie" + randomNum + "/zombie.pack");
+        TextureAtlas atlas = assetManager.get("spritesheets/zombie" + randomNum + "/zombie.pack");
         animation = new Animation<TextureAtlas.AtlasRegion>(0.12f, atlas.getRegions());
         atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth()*SCALE);
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight()*SCALE);
