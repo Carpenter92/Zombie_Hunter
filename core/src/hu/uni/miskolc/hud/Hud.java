@@ -57,7 +57,7 @@ public class Hud implements Disposable {
         moneyLabel.setPosition(4.05f * stage.getWidth() / 5, 9.3f * stage.getHeight() / 10, Align.center);
     }
 
-    public void update(float delta)    {
+    public void update(float delta) {
         moneyLabel.setText(money + "$");
         waveLabel.setText("Wave " + wave);
     }

@@ -42,7 +42,7 @@ public class Zombie implements Disposable {
 
     private int atlasRegionWidth, atlasRegionHeight, xPos, yPos;
 
-    private enum Direction   {
+    private enum Direction {
         RIGHT, LEFT, UP, DOWN
     }
 
@@ -69,13 +69,13 @@ public class Zombie implements Disposable {
         createAnimation(assetManager);
     }
 
-    public Body getBox2dBody()  {
+    public Body getBox2dBody() {
         return box2dBody;
     }
 
-    private void defineZombie(RectangleMapObject spawnPoint)  {
+    private void defineZombie(RectangleMapObject spawnPoint) {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(spawnPoint.getRectangle().getX() / ZombieGame.PPM , (spawnPoint.getRectangle().getY()+spawnPoint.getRectangle().getHeight()/2) / ZombieGame.PPM);
+        bdef.position.set(spawnPoint.getRectangle().getX() / ZombieGame.PPM, (spawnPoint.getRectangle().getY() + spawnPoint.getRectangle().getHeight() / 2) / ZombieGame.PPM);
         xPos = (int) (spawnPoint.getRectangle().getX() / ZombieGame.PPM);
         yPos = (int) (spawnPoint.getRectangle().getY() / ZombieGame.PPM);
 
@@ -85,7 +85,7 @@ public class Zombie implements Disposable {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         //PolygonShape shape = new PolygonShape();
-        shape.setRadius( Zombie.B2D_WIDTH / ZombieGame.PPM);
+        shape.setRadius(Zombie.B2D_WIDTH / ZombieGame.PPM);
         //shape.setAsBox( Zombie.B2D_WIDTH / ZombieGame.PPM, Zombie.HEIGHT / ZombieGame.PPM);
         fdef.shape = shape;
         Fixture fixture = box2dBody.createFixture(fdef);
@@ -99,19 +99,19 @@ public class Zombie implements Disposable {
         int randomNum = rand.nextInt(2) + 1;
         TextureAtlas atlas = assetManager.get("spritesheets/zombie" + randomNum + "/zombie.pack");
         animation = new Animation<TextureAtlas.AtlasRegion>(0.12f, atlas.getRegions());
-        atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth()*SCALE);
-        atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight()*SCALE);
+        atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth() * SCALE);
+        atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight() * SCALE);
     }
 
-    public void updatePath()    {
-        if (box2dBody.getLinearVelocity().isZero() && directions.size >= 1)  {
+    public void updatePath() {
+        if (box2dBody.getLinearVelocity().isZero() && directions.size >= 1) {
             current = directions.first();
             directions.removeIndex(0);
 
             if (current == Zombie.Direction.UP)
                 box2dBody.setLinearVelocity(0, VELOCITY / ZombieGame.PPM);
             if (current == Zombie.Direction.RIGHT)
-                box2dBody.setLinearVelocity(VELOCITY / ZombieGame.PPM, 0 );
+                box2dBody.setLinearVelocity(VELOCITY / ZombieGame.PPM, 0);
             if (current == Zombie.Direction.DOWN)
                 box2dBody.setLinearVelocity(0, -VELOCITY / ZombieGame.PPM);
             if (current == Zombie.Direction.LEFT)
@@ -120,19 +120,19 @@ public class Zombie implements Disposable {
         }
     }
 
-    public void updateSpritePosition(float camX, float camY)    {
-        xPos = (int) (box2dBody.getPosition().x * ZombieGame.PPM - (B2D_WIDTH) - camX*ZombieGame.PPM + ZombieGame.WIDTH / 2);
-        yPos = (int) (box2dBody.getPosition().y * ZombieGame.PPM - (B2D_WIDTH /2) - camY*ZombieGame.PPM + ZombieGame.HEIGHT / 2);
-        if (current == Direction.RIGHT && lookingLeft)  {
+    public void updateSpritePosition(float camX, float camY) {
+        xPos = (int) (box2dBody.getPosition().x * ZombieGame.PPM - (B2D_WIDTH) - camX * ZombieGame.PPM + ZombieGame.WIDTH / 2);
+        yPos = (int) (box2dBody.getPosition().y * ZombieGame.PPM - (B2D_WIDTH / 2) - camY * ZombieGame.PPM + ZombieGame.HEIGHT / 2);
+        if (current == Direction.RIGHT && lookingLeft) {
             lookingLeft = false;
         }
-        if (current == Direction.LEFT && !lookingLeft)  {
+        if (current == Direction.LEFT && !lookingLeft) {
             lookingLeft = true;
         }
     }
 
-    public void draw(float delta)  {
-        elapsedTime+=delta;
+    public void draw(float delta) {
+        elapsedTime += delta;
         if (elapsedTime > 1.2f)
             elapsedTime = 0f;
         if (lookingLeft)
@@ -146,7 +146,7 @@ public class Zombie implements Disposable {
     public void dispose() {
     }
 
-    public void getShot(int damage)   {
+    public void getShot(int damage) {
         health -= damage;
     }
 

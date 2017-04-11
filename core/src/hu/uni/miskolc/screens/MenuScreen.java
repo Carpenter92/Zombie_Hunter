@@ -124,13 +124,13 @@ public class MenuScreen extends ScreenAdapter {
         if (hasContinueOption) {
             continueButton = new ImageButton(new TextureRegionDrawable(buttons.getRegions().get(2)),
                     new TextureRegionDrawable(buttons.getRegions().get(3)));
-        } else  {
+        } else {
             continueButton = new ImageButton(new TextureRegionDrawable(buttons.getRegions().get(4)),
                     new TextureRegionDrawable(buttons.getRegions().get(4)));
         }
     }
 
-    private void addButtonsToStage()    {
+    private void addButtonsToStage() {
         //Adding actors (buttons) to the stage
         stage.addActor(background);
         stage.addActor(newGameButton);
@@ -139,14 +139,14 @@ public class MenuScreen extends ScreenAdapter {
         stage.addActor(continueButton);
 
         //Positioning the buttons
-        newGameButton.setPosition(7*stage.getWidth()/10, (4.5f)*stage.getHeight()/10, Align.center);
-        continueButton.setPosition(7*stage.getWidth()/10, 7*stage.getHeight()/10, Align.center);
-        optionsButton.setPosition(1*stage.getWidth()/10, 5*stage.getHeight()/10, Align.center);
-        exitButton.setPosition(7*stage.getWidth()/10, 2*stage.getHeight()/10, Align.center);
+        newGameButton.setPosition(7 * stage.getWidth() / 10, (4.5f) * stage.getHeight() / 10, Align.center);
+        continueButton.setPosition(7 * stage.getWidth() / 10, 7 * stage.getHeight() / 10, Align.center);
+        optionsButton.setPosition(1 * stage.getWidth() / 10, 5 * stage.getHeight() / 10, Align.center);
+        exitButton.setPosition(7 * stage.getWidth() / 10, 2 * stage.getHeight() / 10, Align.center);
     }
 
-    private void addInputListenersToButtons()  {
-        exitButton.addListener(new ActorGestureListener()   {
+    private void addInputListenersToButtons() {
+        exitButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
@@ -154,7 +154,7 @@ public class MenuScreen extends ScreenAdapter {
                 Gdx.app.exit();
             }
         });
-        newGameButton.addListener(new ActorGestureListener()    {
+        newGameButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
@@ -162,7 +162,7 @@ public class MenuScreen extends ScreenAdapter {
                 popupWindowManager.createLevelSelectorPopup(screenManager, batch);
             }
         });
-        optionsButton.addListener(new ActorGestureListener()    {
+        optionsButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
@@ -170,7 +170,7 @@ public class MenuScreen extends ScreenAdapter {
                 popupWindowManager.createOptionsPopup();
             }
         });
-        continueButton.addListener(new ActorGestureListener()   {
+        continueButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
@@ -189,8 +189,8 @@ public class MenuScreen extends ScreenAdapter {
         dispose();
     }
 
-    private void clearScreen()   {
-        Gdx.gl.glClearColor(0,0,0,1);
+    private void clearScreen() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     }
 

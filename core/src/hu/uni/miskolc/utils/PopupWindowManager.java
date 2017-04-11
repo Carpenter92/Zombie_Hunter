@@ -30,7 +30,7 @@ public class PopupWindowManager {
         this.assetManager = assetManager;
     }
 
-    public void createOptionsPopup()    {
+    public void createOptionsPopup() {
         if (stage.getActors().size == 5 || stage.getActors().size == 10) {
             TextureAtlas optionsButtons = assetManager.get("buttons/optionsbuttons.pack");
 
@@ -97,13 +97,13 @@ public class PopupWindowManager {
                     MenuScreen.buttonClick.play(ZombieGame.volume);
                 }
             });
-        } else  {
+        } else {
             stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
             saveFile.flush();
         }
     }
 
-    public void createLevelSelectorPopup(final ZombieGame screenManager, final SpriteBatch batch)   {
+    public void createLevelSelectorPopup(final ZombieGame screenManager, final SpriteBatch batch) {
 
         TextureAtlas levelButtons = assetManager.get("buttons/levelthumbnails/levelthumbnails.pack");
         TextureAtlas optionsButtons = assetManager.get("buttons/optionsbuttons.pack");
@@ -122,12 +122,12 @@ public class PopupWindowManager {
         stage.addActor(backButton);
 
         popupWindow.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
-        firstButton.setPosition(3.8f*stage.getWidth()/10, 6.2f*stage.getHeight()/10, Align.center);
-        secondButton.setPosition(3.8f*stage.getWidth()/10, 3.8f*stage.getHeight()/10, Align.center);
-        thirdButton.setPosition(6.2f*stage.getWidth()/10, 3.8f*stage.getHeight()/10, Align.center);
+        firstButton.setPosition(3.8f * stage.getWidth() / 10, 6.2f * stage.getHeight() / 10, Align.center);
+        secondButton.setPosition(3.8f * stage.getWidth() / 10, 3.8f * stage.getHeight() / 10, Align.center);
+        thirdButton.setPosition(6.2f * stage.getWidth() / 10, 3.8f * stage.getHeight() / 10, Align.center);
         backButton.setPosition(5 * stage.getWidth() / 10, 1.5f * stage.getHeight() / 10, Align.center);
 
-        firstButton.addListener(new ActorGestureListener()  {
+        firstButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
@@ -137,7 +137,7 @@ public class PopupWindowManager {
                 screenManager.setScreen(new GameScreen(screenManager, batch, (byte) 1));
             }
         });
-        secondButton.addListener(new ActorGestureListener()  {
+        secondButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
@@ -147,14 +147,14 @@ public class PopupWindowManager {
                 screenManager.setScreen(new GameScreen(screenManager, batch, (byte) 2));
             }
         });
-        thirdButton.addListener(new ActorGestureListener()  {
+        thirdButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 MenuScreen.buttonClick.play(ZombieGame.volume);
                 saveFile.putBoolean("continue", true);
                 resetInGameValues();
-                screenManager.setScreen(new GameScreen(screenManager, batch, (byte)3));
+                screenManager.setScreen(new GameScreen(screenManager, batch, (byte) 3));
             }
         });
         backButton.addListener(new ActorGestureListener() {

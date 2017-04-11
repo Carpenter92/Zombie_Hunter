@@ -17,11 +17,11 @@ public class Box2DObjectCreator {
 
     private World world;
 
-    public Box2DObjectCreator(World world)    {
+    public Box2DObjectCreator(World world) {
         this.world = world;
     }
 
-    public void createStaticObjects(MapLayer mapLayer, String layerName)   {
+    public void createStaticObjects(MapLayer mapLayer, String layerName) {
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
@@ -31,11 +31,11 @@ public class Box2DObjectCreator {
             Rectangle rectangle = object.getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / ZombieGame.PPM , (rectangle.getY() + rectangle.getHeight() / 2) / ZombieGame.PPM);
+            bdef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / ZombieGame.PPM, (rectangle.getY() + rectangle.getHeight() / 2) / ZombieGame.PPM);
 
             body = world.createBody(bdef);
 
-            shape.setAsBox((rectangle.getWidth()/ 2) / ZombieGame.PPM, (rectangle.getHeight()/ 2) / ZombieGame.PPM);
+            shape.setAsBox((rectangle.getWidth() / 2) / ZombieGame.PPM, (rectangle.getHeight() / 2) / ZombieGame.PPM);
             fdef.shape = shape;
             Fixture fixture = body.createFixture(fdef);
             fixture.setUserData(layerName);
