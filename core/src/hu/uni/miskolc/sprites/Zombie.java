@@ -1,7 +1,8 @@
 package hu.uni.miskolc.sprites;
 
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,7 +27,7 @@ public class Zombie implements Disposable {
     private static final int B2D_WIDTH = 46;
     private static final int VELOCITY = 80;
     //private static final int HEIGHT = 46;
-    private static final float SCALE = 0.48f;
+    private static final float SCALE = 0.45f;
 
     private boolean lookingLeft = false;
 
@@ -48,7 +49,7 @@ public class Zombie implements Disposable {
         RIGHT, LEFT, UP, DOWN
     }
 
-    public Zombie(World world, SpriteBatch batch, RectangleMapObject spawnPoint) {
+    public Zombie(World world, SpriteBatch batch, AssetManager assetManager, RectangleMapObject spawnPoint) {
         this.world = world;
         this.batch = batch;
         health = 100;
@@ -68,7 +69,7 @@ public class Zombie implements Disposable {
         current = Direction.RIGHT;
 
         defineZombie(spawnPoint);
-        createAnimation();
+        createAnimation(assetManager);
     }
 
     public Body getBox2dBody()  {
@@ -96,10 +97,10 @@ public class Zombie implements Disposable {
         shape.dispose();
     }
 
-    private void createAnimation() {
+    private void createAnimation(AssetManager assetManager) {
         Random rand = new Random(System.currentTimeMillis());
         int randomNum = rand.nextInt(2) + 1;
-        atlas = new TextureAtlas(Gdx.files.internal("spritesheets/zombie" + randomNum + "/zombie.pack"));
+        atlas = assetManager.get("spritesheets/zombie" + randomNum + "/zombie.pack");
         animation = new Animation<TextureAtlas.AtlasRegion>(0.12f, atlas.getRegions());
         atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth()*SCALE);
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight()*SCALE);
@@ -127,15 +128,9 @@ public class Zombie implements Disposable {
         yPos = (int) (box2dBody.getPosition().y * ZombieGame.PPM - (B2D_WIDTH /2) - camY*ZombieGame.PPM + ZombieGame.HEIGHT / 2);
         if (current == Direction.RIGHT && lookingLeft)  {
             lookingLeft = false;
-            for (TextureRegion temp : atlas.getRegions())    {
-                temp.flip(true,false);
-            }
         }
         if (current == Direction.LEFT && !lookingLeft)  {
             lookingLeft = true;
-            for (TextureRegion temp : atlas.getRegions())    {
-                temp.flip(true,false);
-            }
         }
     }
 
@@ -143,13 +138,15 @@ public class Zombie implements Disposable {
         elapsedTime+=delta;
         if (elapsedTime > 1.2f)
             elapsedTime = 0f;
-        batch.draw(animation.getKeyFrame(elapsedTime,true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);
-        font.draw(batch, health+"", xPos, yPos);
+        if (lookingLeft)
+            batch.draw(animation.getKeyFrame(elapsedTime, true), xPos + atlasRegionWidth, yPos, -atlasRegionWidth, atlasRegionHeight);
+        else
+            batch.draw(animation.getKeyFrame(elapsedTime, true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);
+        font.draw(batch, health + " HP", xPos, yPos);
     }
 
     @Override
     public void dispose() {
-        atlas.dispose();
     }
 
     public void getShot(int damage)   {

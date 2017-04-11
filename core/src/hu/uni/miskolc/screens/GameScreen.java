@@ -100,6 +100,8 @@ public class GameScreen extends InputAdapter implements Screen {
         assetManager.load("music/ingame1.mp3", Music.class);
         assetManager.load("sounds/shoot.mp3", Sound.class);
         assetManager.load("spritesheets/healthbar/healthbar.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/zombie1/zombie.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/zombie2/zombie.pack", TextureAtlas.class);
         assetManager.finishLoading();
 
         music = assetManager.get("music/ingame1.mp3");
@@ -147,8 +149,8 @@ public class GameScreen extends InputAdapter implements Screen {
 
         //Box2D (Debug Lines)
         if (showDebugLines) box2DDebugRenderer.render(world, camera.combined);
-        world.step(delta, 6, 2);
 
+        world.step(delta, 6, 2);
         handleInput(delta);
         batch.begin();
         updateZombies(delta);
@@ -158,7 +160,7 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     private void createZombie() {
-        zombies.add(new Zombie(world, batch, spawnPoint));
+        zombies.add(new Zombie(world, batch, assetManager, spawnPoint));
         zombiesSpawned++;
     }
 
@@ -275,6 +277,8 @@ public class GameScreen extends InputAdapter implements Screen {
         assetManager.unload("music/ingame1.mp3");
         assetManager.unload("sounds/shoot.mp3");
         assetManager.unload("spritesheets/healthbar/healthbar.pack");
+        assetManager.unload("spritesheets/zombie1/zombie.pack");
+        assetManager.unload("spritesheets/zombie2/zombie.pack");
         map.dispose();
         mapRenderer.dispose();
         world.dispose();

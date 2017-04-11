@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -28,39 +29,41 @@ public class Hud implements Disposable {
     private int money;
 
     private Label waveLabel;
-    private Label livesLeftLabel;
     private Label moneyLabel;
     private TextureAtlas healthBarAtlas;
     private Image currentHealth;
+    private Image currentWave;
+    private Image currentMoney;
 
     public Hud(SpriteBatch batch, AssetManager assetManager) {
         viewPort = new FitViewport(ZombieGame.WIDTH, ZombieGame.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewPort, batch);
 
-        Table table = new Table();
-        table.top();
-        table.setFillParent(true);
-
         healthBarAtlas = assetManager.get("spritesheets/healthbar/healthbar.pack");
         currentHealth = new Image(healthBarAtlas.findRegion(String.valueOf(livesLeft)));
+        currentWave = new Image(healthBarAtlas.findRegion("wave"));
+        currentMoney = new Image(healthBarAtlas.findRegion("money"));
         waveLabel = new Label(String.format("%01d", wave), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        livesLeftLabel = new Label(String.format("%02d", livesLeft), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         moneyLabel = new Label(String.format("%03d", money), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         waveLabel.setFontScale(2.0f);
-        livesLeftLabel.setFontScale(2.0f);
         moneyLabel.setFontScale(2.0f);
 
-        table.add(currentHealth).expandX();
-        table.add(waveLabel).expandX();
-        table.add(moneyLabel).expandX();
+        stage.addActor(currentHealth);
+        stage.addActor(currentWave);
+        stage.addActor(currentMoney);
+        stage.addActor(waveLabel);
+        stage.addActor(moneyLabel);
 
-        stage.addActor(table);
+        currentHealth.setPosition(stage.getWidth() / 5, 9.3f * stage.getHeight() / 10, Align.center);
+        currentWave.setPosition(stage.getWidth() / 2, 9.3f * stage.getHeight() / 10, Align.center);
+        waveLabel.setPosition(0.95f * stage.getWidth() / 2, 9.3f * stage.getHeight() / 10, Align.center);
+        currentMoney.setPosition(4 * stage.getWidth() / 5, 9.3f * stage.getHeight() / 10, Align.center);
+        moneyLabel.setPosition(4.05f * stage.getWidth() / 5, 9.3f * stage.getHeight() / 10, Align.center);
     }
 
     public void update(float delta)    {
-        moneyLabel.setText(money+"");
-        livesLeftLabel.setText(livesLeft + "");
-        waveLabel.setText(wave+"");
+        moneyLabel.setText(money + "$");
+        waveLabel.setText("Wave " + wave);
     }
 
     public int getWave() {

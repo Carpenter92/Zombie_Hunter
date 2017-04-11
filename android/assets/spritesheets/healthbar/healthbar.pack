@@ -80,3 +80,17 @@ repeat: none
   orig: 317, 86
   offset: 0, 0
   index: -1
+wave
+  rotate: false
+  xy: 639, 182
+  size: 292, 81
+  orig: 292, 81
+  offset: 0, 0
+  index: -1
+money
+  rotate: false
+  xy: 320, 7
+  size: 210, 80
+  orig: 210, 80
+  offset: 0, 0
+  index: -1
