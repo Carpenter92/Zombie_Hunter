@@ -37,6 +37,9 @@ public class GameScreen extends InputAdapter implements Screen {
     private static final int MAP_OFFSET_X = 128; //128
     private static final int MAP_OFFSET_Y = 64; //64
 
+    public static final short DYNAMIC_ENTITY = 0x1;    // 0001
+    public static final short STATIC_WALL_ENTITY = 0x1 << 1; // 0010 or 0x2 in hex
+
     private ZombieGame screenManager;
     private Preferences saveFile;
     private boolean showDebugLines;
@@ -99,12 +102,18 @@ public class GameScreen extends InputAdapter implements Screen {
 
     private void initializeAssets() {
         Box2D.init();
+        Gdx.input.setInputProcessor(this);
         assetManager.load("music/ingame1.mp3", Music.class);
         assetManager.load("sounds/shoot.mp3", Sound.class);
         assetManager.load("spritesheets/healthbar/healthbar.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/zombie1/zombie.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/zombie2/zombie.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/tower/tower.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/zombie1/zombie1.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/zombie2/zombie2.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier1/idle/soldier1idle.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier1/shoot/soldier1shoot.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier2/soldier2.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier3/soldier3.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier4/soldier4.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier5/soldier5.pack", TextureAtlas.class);
         assetManager.finishLoading();
 
         Music music = assetManager.get("music/ingame1.mp3");
@@ -219,14 +228,6 @@ public class GameScreen extends InputAdapter implements Screen {
 
     //Temporary method for moving the camera
     private void handleInput(float delta) {
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            camera.translate(-5 * delta, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            camera.translate(5 * delta, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            camera.translate(0, 5 * delta);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            camera.translate(0, -5 * delta);
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             zombiesSpawned = 0;
             hud.setWave(hud.getWave() + 1);
@@ -238,6 +239,13 @@ public class GameScreen extends InputAdapter implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT) && !showDebugLines)
             showDebugLines = true;
 
+
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        camera.position.set(((ZombieGame.WIDTH - screenX) / ZombieGame.PPM), (screenY / ZombieGame.PPM), 0);
+
         if (camera.position.x < (0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM)
             camera.position.set(((0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM), camera.position.y, 0);
         if (camera.position.x > (1536 - ZombieGame.WIDTH / 2) / ZombieGame.PPM)
@@ -248,6 +256,7 @@ public class GameScreen extends InputAdapter implements Screen {
             camera.position.set(camera.position.x, (0 + ZombieGame.HEIGHT / 2) / ZombieGame.PPM, 0);
 
         camera.update();
+        return super.touchDragged(screenX, screenY, pointer);
     }
 
     @Override
@@ -282,9 +291,14 @@ public class GameScreen extends InputAdapter implements Screen {
         assetManager.unload("music/ingame1.mp3");
         assetManager.unload("sounds/shoot.mp3");
         assetManager.unload("spritesheets/healthbar/healthbar.pack");
-        assetManager.unload("spritesheets/zombie1/zombie.pack");
-        assetManager.unload("spritesheets/zombie2/zombie.pack");
-        assetManager.unload("spritesheets/tower/tower.pack");
+        assetManager.unload("spritesheets/zombie1/zombie1.pack");
+        assetManager.unload("spritesheets/zombie2/zombie2.pack");
+        assetManager.unload("spritesheets/soldier1/idle/soldier1idle.pack");
+        assetManager.unload("spritesheets/soldier1/shoot/soldier1shoot.pack");
+        assetManager.unload("spritesheets/soldier2/soldier2.pack");
+        assetManager.unload("spritesheets/soldier3/soldier3.pack");
+        assetManager.unload("spritesheets/soldier4/soldier4.pack");
+        assetManager.unload("spritesheets/soldier5/soldier5.pack");
         map.dispose();
         mapRenderer.dispose();
         world.dispose();
@@ -299,4 +313,5 @@ public class GameScreen extends InputAdapter implements Screen {
     public Array<Zombie> getZombies() {
         return zombies;
     }
+
 }

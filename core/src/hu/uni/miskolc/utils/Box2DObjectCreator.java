@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import hu.uni.miskolc.ZombieGame;
+import hu.uni.miskolc.screens.GameScreen;
 
 public class Box2DObjectCreator {
 
@@ -37,6 +38,8 @@ public class Box2DObjectCreator {
 
             shape.setAsBox((rectangle.getWidth() / 2) / ZombieGame.PPM, (rectangle.getHeight() / 2) / ZombieGame.PPM);
             fdef.shape = shape;
+            fdef.filter.categoryBits = GameScreen.STATIC_WALL_ENTITY;
+            fdef.filter.maskBits = GameScreen.DYNAMIC_ENTITY;
             Fixture fixture = body.createFixture(fdef);
             if (object.getProperties().get("Direction") != null)
                 fixture.setUserData(object.getProperties().get("Direction"));

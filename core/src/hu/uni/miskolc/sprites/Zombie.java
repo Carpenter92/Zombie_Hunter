@@ -18,12 +18,13 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.Random;
 
 import hu.uni.miskolc.ZombieGame;
+import hu.uni.miskolc.screens.GameScreen;
 
 public class Zombie implements Disposable {
 
     private static final int B2D_WIDTH = 46;
     public static final int VELOCITY = 80;
-    private static final float SCALE = 0.45f;
+    private static final float SCALE = 0.86f;
 
     private boolean lookingLeft = false;
 
@@ -59,10 +60,10 @@ public class Zombie implements Disposable {
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        //PolygonShape shape = new PolygonShape();
         shape.setRadius(Zombie.B2D_WIDTH / ZombieGame.PPM);
-        //shape.setAsBox( Zombie.B2D_WIDTH / ZombieGame.PPM, Zombie.HEIGHT / ZombieGame.PPM);
         fdef.shape = shape;
+        fdef.filter.categoryBits = GameScreen.DYNAMIC_ENTITY;
+        fdef.filter.maskBits = GameScreen.STATIC_WALL_ENTITY;
         Fixture fixture = box2dBody.createFixture(fdef);
         fixture.setUserData("zombie");
         box2dBody.setLinearVelocity(VELOCITY / ZombieGame.PPM, 0);
@@ -72,7 +73,7 @@ public class Zombie implements Disposable {
     private void createAnimation(AssetManager assetManager) {
         Random rand = new Random(System.currentTimeMillis());
         int randomNum = rand.nextInt(2) + 1;
-        TextureAtlas atlas = assetManager.get("spritesheets/zombie" + randomNum + "/zombie.pack");
+        TextureAtlas atlas = assetManager.get("spritesheets/zombie" + randomNum + "/zombie" + randomNum + ".pack");
         animation = new Animation<TextureAtlas.AtlasRegion>(0.12f, atlas.getRegions());
         atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth() * SCALE);
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight() * SCALE);
