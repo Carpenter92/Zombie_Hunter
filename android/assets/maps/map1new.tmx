@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="48" height="27" tilewidth="32" tileheight="32" nextobjectid="135">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="48" height="27" tilewidth="32" tileheight="32" nextobjectid="147">
  <tileset firstgid="1" name="grass" tilewidth="32" tileheight="32" tilecount="18" columns="3">
   <image source="LPC Base Assets/tiles/grass.png" width="96" height="192"/>
   <terraintypes>
@@ -134,29 +134,56 @@
   <image source="LPC Base Assets/tiles/rock.png" width="64" height="32"/>
  </tileset>
  <objectgroup name="Obstacles">
-  <object id="103" x="0" y="544" width="352"/>
-  <object id="104" x="352" y="256" height="288"/>
-  <object id="105" x="352" y="256" width="416"/>
-  <object id="106" x="768" y="256" height="256"/>
-  <object id="107" x="608" y="512" width="160"/>
-  <object id="108" x="608" y="512" height="64"/>
-  <object id="109" x="608" y="576" width="512"/>
-  <object id="110" x="1120" y="512" height="64"/>
-  <object id="111" x="864" y="512" width="256"/>
-  <object id="112" x="864" y="256" height="256"/>
-  <object id="113" x="864" y="256" width="672"/>
-  <object id="114" x="0" y="544" height="96"/>
-  <object id="115" x="0" y="640" width="448"/>
-  <object id="116" x="448" y="352" height="288"/>
-  <object id="117" x="448" y="352" width="224"/>
-  <object id="118" x="672" y="352" height="64"/>
-  <object id="119" x="512" y="416" width="160"/>
-  <object id="120" x="512" y="416" height="256"/>
-  <object id="121" x="512" y="672" width="704"/>
-  <object id="122" x="1216" y="416" height="256"/>
-  <object id="123" x="960" y="416" width="256"/>
-  <object id="124" x="960" y="352" height="64"/>
-  <object id="125" x="960" y="352" width="576"/>
+  <object id="137" x="448" y="576" width="32" height="32">
+   <properties>
+    <property name="Direction" value="UP"/>
+   </properties>
+  </object>
+  <object id="138" x="384" y="224" width="32" height="32">
+   <properties>
+    <property name="Direction" value="RIGHT"/>
+   </properties>
+  </object>
+  <object id="139" x="768" y="288" width="32" height="32">
+   <properties>
+    <property name="Direction" value="DOWN"/>
+   </properties>
+  </object>
+  <object id="140" x="704" y="512" width="32" height="32">
+   <properties>
+    <property name="Direction" value="LEFT"/>
+   </properties>
+  </object>
+  <object id="141" x="480" y="448" width="32" height="32">
+   <properties>
+    <property name="Direction" value="DOWN"/>
+   </properties>
+  </object>
+  <object id="142" x="544" y="672" width="32" height="32">
+   <properties>
+    <property name="Direction" value="RIGHT"/>
+   </properties>
+  </object>
+  <object id="143" x="1216" y="608" width="32" height="32">
+   <properties>
+    <property name="Direction" value="UP"/>
+   </properties>
+  </object>
+  <object id="144" x="1152" y="384" width="32" height="32">
+   <properties>
+    <property name="Direction" value="LEFT"/>
+   </properties>
+  </object>
+  <object id="145" x="832" y="448" width="32" height="32">
+   <properties>
+    <property name="Direction" value="UP"/>
+   </properties>
+  </object>
+  <object id="146" x="896" y="224" width="32" height="32">
+   <properties>
+    <property name="Direction" value="RIGHT"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="Towers">
   <object id="64" x="64" y="704" width="64" height="96"/>

@@ -38,7 +38,10 @@ public class Box2DObjectCreator {
             shape.setAsBox((rectangle.getWidth() / 2) / ZombieGame.PPM, (rectangle.getHeight() / 2) / ZombieGame.PPM);
             fdef.shape = shape;
             Fixture fixture = body.createFixture(fdef);
-            fixture.setUserData(layerName);
+            if (object.getProperties().get("Direction") != null)
+                fixture.setUserData(object.getProperties().get("Direction"));
+            else
+                fixture.setUserData(layerName);
         }
         shape.dispose();
     }

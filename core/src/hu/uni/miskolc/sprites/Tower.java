@@ -1,12 +1,10 @@
 package hu.uni.miskolc.sprites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -47,14 +45,16 @@ public class Tower implements Disposable{
         range = (int) (200 / ZombieGame.PPM);
         lookingLeft = false;
         defineTower();
-        createAnimation(assetManager);
+        createAnimation();
         shootSound = assetManager.get("sounds/shoot.mp3");
     }
 
     public void checkForZombiesInRange(GameScreen screen) {
+
         //Every second check for zombies
-        if (elapsedTime > 1f && zombies.size != 0) {
+        if (elapsedTime > 1f) {
             elapsedTime = 0f;
+            zombies = screen.getZombies();
             //all zombies loop
             for (Zombie current : zombies) {
                 float x = current.getBox2dBody().getPosition().x;
@@ -94,19 +94,14 @@ public class Tower implements Disposable{
         shape.dispose();
     }
 
-    private void createAnimation(AssetManager assetManager) {
-        atlas = new TextureAtlas(Gdx.files.internal("spritesheets/tower/tower.pack"));
+    private void createAnimation() {
+        atlas = ZombieGame.getAssetManager().get("spritesheets/tower/tower.pack");
         animation = new Animation<TextureAtlas.AtlasRegion>(0.15f, atlas.getRegions());
         atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth()*SCALE);
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight()*SCALE);
-
-        flipSprite();
     }
 
     private void flipSprite() {
-        for (TextureRegion temp : atlas.getRegions())    {
-            temp.flip(true,false);
-        }
         if (lookingLeft) {
             lookingLeft = false;
             return;
@@ -121,15 +116,13 @@ public class Tower implements Disposable{
 
     public void draw(float delta)  {
         elapsedTime+=delta;
-        batch.draw(animation.getKeyFrame(elapsedTime,true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);
-    }
-
-    public void setZombies(Array<Zombie> zombies)   {
-        this.zombies = zombies;
+        if (!lookingLeft)
+            batch.draw(animation.getKeyFrame(elapsedTime, true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);
+        else
+            batch.draw(animation.getKeyFrame(elapsedTime, true), xPos + atlasRegionWidth, yPos, -atlasRegionWidth, atlasRegionHeight);
     }
 
     @Override
     public void dispose() {
-        atlas.dispose();
     }
 }

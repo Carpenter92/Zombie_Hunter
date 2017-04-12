@@ -6,7 +6,9 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.screens.GameScreen;
+import hu.uni.miskolc.sprites.Zombie;
 
 public class ZombieContactListener implements ContactListener {
 
@@ -24,6 +26,22 @@ public class ZombieContactListener implements ContactListener {
             if (fixtureA.getUserData().equals("base") && fixtureB.getUserData().equals("zombie")) {
                 screen.toRemove.add(fixtureB.getBody());
                 screen.getHud().decreaseLives();
+            } else {
+                if (fixtureA.getUserData().equals("UP")) {
+                    fixtureB.getBody().setLinearVelocity(0, Zombie.VELOCITY / ZombieGame.PPM);
+                    return;
+                }
+                if (fixtureA.getUserData().equals("DOWN")) {
+                    fixtureB.getBody().setLinearVelocity(0, -Zombie.VELOCITY / ZombieGame.PPM);
+                    return;
+                }
+                if (fixtureA.getUserData().equals("LEFT")) {
+                    fixtureB.getBody().setLinearVelocity(-Zombie.VELOCITY / ZombieGame.PPM, 0);
+                    return;
+                }
+                if (fixtureA.getUserData().equals("RIGHT")) {
+                    fixtureB.getBody().setLinearVelocity(Zombie.VELOCITY / ZombieGame.PPM, 0);
+                }
             }
         }
     }

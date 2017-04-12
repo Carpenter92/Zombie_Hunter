@@ -1,11 +1,9 @@
 package hu.uni.miskolc.hud;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -31,11 +29,11 @@ public class Hud implements Disposable {
     private TextureAtlas healthBarAtlas;
     private Image currentHealth;
 
-    public Hud(SpriteBatch batch, AssetManager assetManager) {
+    public Hud() {
         Viewport viewPort = new FitViewport(ZombieGame.WIDTH, ZombieGame.HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewPort, batch);
+        stage = new Stage(viewPort, ZombieGame.getSpriteBatch());
 
-        healthBarAtlas = assetManager.get("spritesheets/healthbar/healthbar.pack");
+        healthBarAtlas = ZombieGame.getAssetManager().get("spritesheets/healthbar/healthbar.pack");
         currentHealth = new Image(healthBarAtlas.findRegion(String.valueOf(livesLeft)));
         Image currentWave = new Image(healthBarAtlas.findRegion("wave"));
         Image currentMoney = new Image(healthBarAtlas.findRegion("money"));

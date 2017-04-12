@@ -3,7 +3,6 @@ package hu.uni.miskolc.utils;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -24,10 +23,10 @@ public class PopupWindowManager {
     private Preferences saveFile;
     private AssetManager assetManager;
 
-    public PopupWindowManager(Stage stage, Preferences saveFile, AssetManager assetManager) {
+    public PopupWindowManager(Stage stage, Preferences saveFile) {
         this.stage = stage;
         this.saveFile = saveFile;
-        this.assetManager = assetManager;
+        this.assetManager = ZombieGame.getAssetManager();
     }
 
     public void createOptionsPopup() {
@@ -103,7 +102,7 @@ public class PopupWindowManager {
         }
     }
 
-    public void createLevelSelectorPopup(final ZombieGame screenManager, final SpriteBatch batch) {
+    public void createLevelSelectorPopup(final ZombieGame screenManager) {
 
         TextureAtlas levelButtons = assetManager.get("buttons/levelthumbnails/levelthumbnails.pack");
         TextureAtlas optionsButtons = assetManager.get("buttons/optionsbuttons.pack");
@@ -134,7 +133,7 @@ public class PopupWindowManager {
                 MenuScreen.buttonClick.play(ZombieGame.volume);
                 saveFile.putBoolean("continue", true);
                 resetInGameValues();
-                screenManager.setScreen(new GameScreen(screenManager, batch, (byte) 1));
+                screenManager.setScreen(new GameScreen(screenManager, (byte) 1));
             }
         });
         secondButton.addListener(new ActorGestureListener() {
@@ -144,7 +143,7 @@ public class PopupWindowManager {
                 MenuScreen.buttonClick.play(ZombieGame.volume);
                 saveFile.putBoolean("continue", true);
                 resetInGameValues();
-                screenManager.setScreen(new GameScreen(screenManager, batch, (byte) 2));
+                screenManager.setScreen(new GameScreen(screenManager, (byte) 2));
             }
         });
         thirdButton.addListener(new ActorGestureListener() {
@@ -154,7 +153,7 @@ public class PopupWindowManager {
                 MenuScreen.buttonClick.play(ZombieGame.volume);
                 saveFile.putBoolean("continue", true);
                 resetInGameValues();
-                screenManager.setScreen(new GameScreen(screenManager, batch, (byte) 3));
+                screenManager.setScreen(new GameScreen(screenManager, (byte) 3));
             }
         });
         backButton.addListener(new ActorGestureListener() {

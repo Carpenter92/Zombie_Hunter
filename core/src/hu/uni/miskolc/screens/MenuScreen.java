@@ -46,10 +46,10 @@ public class MenuScreen extends ScreenAdapter {
     private boolean isMusicEnabled;
     private boolean areSoundsEnabled;
 
-    public MenuScreen(ZombieGame screenManager, SpriteBatch batch) {
+    public MenuScreen(ZombieGame screenManager) {
         this.screenManager = screenManager;
-        this.batch = batch;
-        this.assetManager = screenManager.getAssetManager();
+        this.batch = ZombieGame.getSpriteBatch();
+        this.assetManager = ZombieGame.getAssetManager();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class MenuScreen extends ScreenAdapter {
         //Creating stage for UI elements
         stage = new Stage(new FitViewport(ZombieGame.WIDTH, ZombieGame.HEIGHT), batch);
         Gdx.input.setInputProcessor(stage);
-        popupWindowManager = new PopupWindowManager(stage, saveFile, assetManager);
+        popupWindowManager = new PopupWindowManager(stage, saveFile);
 
         loadAssets();
         createButtons();
@@ -159,7 +159,7 @@ public class MenuScreen extends ScreenAdapter {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 buttonClick.play(ZombieGame.volume);
-                popupWindowManager.createLevelSelectorPopup(screenManager, batch);
+                popupWindowManager.createLevelSelectorPopup(screenManager);
             }
         });
         optionsButton.addListener(new ActorGestureListener() {
@@ -176,7 +176,7 @@ public class MenuScreen extends ScreenAdapter {
                 super.tap(event, x, y, count, button);
                 if (hasContinueOption) {
                     buttonClick.play(ZombieGame.volume);
-                    screenManager.setScreen(new GameScreen(screenManager, batch, (byte) saveFile.getInteger("currentLevel")));
+                    screenManager.setScreen(new GameScreen(screenManager, (byte) saveFile.getInteger("currentLevel")));
                 }
             }
         });

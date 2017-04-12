@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -37,7 +38,6 @@ public class GameScreen extends InputAdapter implements Screen {
     private static final int MAP_OFFSET_Y = 64; //64
 
     private ZombieGame screenManager;
-    private Music music;
     private Preferences saveFile;
     private boolean showDebugLines;
     private int currentLevel;
@@ -67,10 +67,10 @@ public class GameScreen extends InputAdapter implements Screen {
     private Array<Zombie> zombies;
     private Array<Tower> towers;
 
-    public GameScreen(ZombieGame screenManager, SpriteBatch batch, byte currentLevel) {
+    public GameScreen(ZombieGame screenManager, byte currentLevel) {
         this.screenManager = screenManager;
-        this.assetManager = screenManager.getAssetManager();
-        this.batch = batch;
+        this.assetManager = ZombieGame.getAssetManager();
+        this.batch = ZombieGame.getSpriteBatch();
         this.currentLevel = currentLevel;
         showDebugLines = true;
     }
@@ -86,8 +86,9 @@ public class GameScreen extends InputAdapter implements Screen {
         //Creating camera and the HUD
         camera = new OrthographicCamera();
         viewport = new FitViewport(ZombieGame.WIDTH / ZombieGame.PPM, ZombieGame.HEIGHT / ZombieGame.PPM, camera);
+        viewport.apply(true);
         camera.position.set((ZombieGame.WIDTH / 2 + MAP_OFFSET_X) / ZombieGame.PPM, (ZombieGame.HEIGHT / 2 + MAP_OFFSET_Y) / ZombieGame.PPM, 0);
-        hud = new Hud(batch, assetManager);
+        hud = new Hud();
         hud.setWave(saveFile.getInteger("currentWave", 1));
         hud.setMoney(saveFile.getInteger("currentMoney", 100));
         hud.setLivesLeft(saveFile.getInteger("currentLivesLeft", 10));
@@ -97,14 +98,16 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     private void initializeAssets() {
+        Box2D.init();
         assetManager.load("music/ingame1.mp3", Music.class);
         assetManager.load("sounds/shoot.mp3", Sound.class);
         assetManager.load("spritesheets/healthbar/healthbar.pack", TextureAtlas.class);
         assetManager.load("spritesheets/zombie1/zombie.pack", TextureAtlas.class);
         assetManager.load("spritesheets/zombie2/zombie.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/tower/tower.pack", TextureAtlas.class);
         assetManager.finishLoading();
 
-        music = assetManager.get("music/ingame1.mp3");
+        Music music = assetManager.get("music/ingame1.mp3");
         if (saveFile.getBoolean("music", true)) music.play();
 
         //Creating the empty zombies and towers arrays
@@ -128,7 +131,6 @@ public class GameScreen extends InputAdapter implements Screen {
         box2DDebugRenderer.SHAPE_STATIC.set(1, 0, 0, 1);
         Box2DObjectCreator B2Dcreator = new Box2DObjectCreator(world);
         B2Dcreator.createStaticObjects(map.getLayers().get(0), "walls");
-        //B2Dcreator.createStaticObjects(map.getLayers().get(1), "walls");
         B2Dcreator.createStaticObjects(map.getLayers().get(3), "base");
     }
 
@@ -137,6 +139,7 @@ public class GameScreen extends InputAdapter implements Screen {
         clearScreen();
         //Clearing the array of zombies that collided with tha base int the previous frame
         clearDeadBodies();
+
         timePassed += delta;
 
         //Render map
@@ -150,13 +153,21 @@ public class GameScreen extends InputAdapter implements Screen {
         //Box2D (Debug Lines)
         if (showDebugLines) box2DDebugRenderer.render(world, camera.combined);
 
-        world.step(delta, 6, 2);
         handleInput(delta);
         batch.begin();
-        updateZombies(delta);
-        createTowerHandler();
+        updateZombieLocations(delta);
+        zombieSpawner();
+        towerCreatorListener();
         updateTowers();
         batch.end();
+        world.step(delta, 6, 2);
+    }
+
+    private void zombieSpawner() {
+        if (timePassed > 2 && zombiesSpawned < 8) {
+            createZombie();
+            timePassed = 0;
+        }
     }
 
     private void createZombie() {
@@ -164,7 +175,7 @@ public class GameScreen extends InputAdapter implements Screen {
         zombiesSpawned++;
     }
 
-    private void createTowerHandler() {
+    private void towerCreatorListener() {
         if (Gdx.input.justTouched() && hud.getMoney() >= 50) {
             hud.setMoney(hud.getMoney() - 50);
             towers.add(new Tower(world, batch, assetManager,
@@ -173,13 +184,8 @@ public class GameScreen extends InputAdapter implements Screen {
         }
     }
 
-    private void updateZombies(float delta) {
-        if (timePassed > 2 && zombiesSpawned < 8) {
-            createZombie();
-            timePassed = 0;
-        }
+    private void updateZombieLocations(float delta) {
         for (Zombie individualZombie : zombies) {
-            individualZombie.updatePath();
             individualZombie.updateSpritePosition(camera.position.x, camera.position.y);
             individualZombie.draw(delta);
         }
@@ -189,7 +195,6 @@ public class GameScreen extends InputAdapter implements Screen {
         for (Tower individualTower : towers) {
             individualTower.updateSpritePosition(camera.position.x, camera.position.y);
             individualTower.draw(Gdx.graphics.getDeltaTime());
-            individualTower.setZombies(zombies);
             individualTower.checkForZombiesInRange(this);
         }
     }
@@ -227,7 +232,7 @@ public class GameScreen extends InputAdapter implements Screen {
             hud.setWave(hud.getWave() + 1);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-            screenManager.setScreen(new MenuScreen(screenManager, batch));
+            screenManager.setScreen(new MenuScreen(screenManager));
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT) && showDebugLines)
             showDebugLines = false;
         if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT) && !showDebugLines)
@@ -279,6 +284,7 @@ public class GameScreen extends InputAdapter implements Screen {
         assetManager.unload("spritesheets/healthbar/healthbar.pack");
         assetManager.unload("spritesheets/zombie1/zombie.pack");
         assetManager.unload("spritesheets/zombie2/zombie.pack");
+        assetManager.unload("spritesheets/tower/tower.pack");
         map.dispose();
         mapRenderer.dispose();
         world.dispose();
@@ -288,5 +294,9 @@ public class GameScreen extends InputAdapter implements Screen {
 
     public Hud getHud() {
         return hud;
+    }
+
+    public Array<Zombie> getZombies() {
+        return zombies;
     }
 }

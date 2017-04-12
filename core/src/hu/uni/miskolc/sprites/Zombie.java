@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 import java.util.Random;
@@ -23,8 +22,7 @@ import hu.uni.miskolc.ZombieGame;
 public class Zombie implements Disposable {
 
     private static final int B2D_WIDTH = 46;
-    private static final int VELOCITY = 80;
-    //private static final int HEIGHT = 46;
+    public static final int VELOCITY = 80;
     private static final float SCALE = 0.45f;
 
     private boolean lookingLeft = false;
@@ -37,14 +35,8 @@ public class Zombie implements Disposable {
 
     private World world;
     public Body box2dBody;
-    private Direction current;
-    private Array<Direction> directions;
-
     private int atlasRegionWidth, atlasRegionHeight, xPos, yPos;
 
-    private enum Direction {
-        RIGHT, LEFT, UP, DOWN
-    }
 
     public Zombie(World world, SpriteBatch batch, AssetManager assetManager, RectangleMapObject spawnPoint) {
         this.world = world;
@@ -52,25 +44,8 @@ public class Zombie implements Disposable {
         health = 100;
         font = new BitmapFont();
 
-        directions = new Array<Direction>();
-        directions.add(Direction.UP);
-        directions.add(Direction.RIGHT);
-        directions.add(Direction.DOWN);
-        directions.add(Direction.LEFT);
-        directions.add(Direction.DOWN);
-        directions.add(Direction.RIGHT);
-        directions.add(Direction.UP);
-        directions.add(Direction.LEFT);
-        directions.add(Direction.UP);
-        directions.add(Direction.RIGHT);
-        current = Direction.RIGHT;
-
         defineZombie(spawnPoint);
         createAnimation(assetManager);
-    }
-
-    public Body getBox2dBody() {
-        return box2dBody;
     }
 
     private void defineZombie(RectangleMapObject spawnPoint) {
@@ -103,32 +78,10 @@ public class Zombie implements Disposable {
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight() * SCALE);
     }
 
-    public void updatePath() {
-        if (box2dBody.getLinearVelocity().isZero() && directions.size >= 1) {
-            current = directions.first();
-            directions.removeIndex(0);
-
-            if (current == Zombie.Direction.UP)
-                box2dBody.setLinearVelocity(0, VELOCITY / ZombieGame.PPM);
-            if (current == Zombie.Direction.RIGHT)
-                box2dBody.setLinearVelocity(VELOCITY / ZombieGame.PPM, 0);
-            if (current == Zombie.Direction.DOWN)
-                box2dBody.setLinearVelocity(0, -VELOCITY / ZombieGame.PPM);
-            if (current == Zombie.Direction.LEFT)
-                box2dBody.setLinearVelocity(-VELOCITY / ZombieGame.PPM, 0);
-
-        }
-    }
-
     public void updateSpritePosition(float camX, float camY) {
         xPos = (int) (box2dBody.getPosition().x * ZombieGame.PPM - (B2D_WIDTH) - camX * ZombieGame.PPM + ZombieGame.WIDTH / 2);
         yPos = (int) (box2dBody.getPosition().y * ZombieGame.PPM - (B2D_WIDTH / 2) - camY * ZombieGame.PPM + ZombieGame.HEIGHT / 2);
-        if (current == Direction.RIGHT && lookingLeft) {
-            lookingLeft = false;
-        }
-        if (current == Direction.LEFT && !lookingLeft) {
-            lookingLeft = true;
-        }
+        lookingLeft = box2dBody.getLinearVelocity().x < 0;
     }
 
     public void draw(float delta) {
@@ -144,6 +97,10 @@ public class Zombie implements Disposable {
 
     @Override
     public void dispose() {
+    }
+
+    public Body getBox2dBody() {
+        return box2dBody;
     }
 
     public void getShot(int damage) {
