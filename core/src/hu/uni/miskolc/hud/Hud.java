@@ -1,8 +1,6 @@
 package hu.uni.miskolc.hud;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -24,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.screens.GameScreen;
 import hu.uni.miskolc.states.GameState;
+import hu.uni.miskolc.utils.PopupWindowManager;
 
 public class Hud implements Disposable {
 
@@ -40,12 +39,16 @@ public class Hud implements Disposable {
     private ImageButton startWaveButton;
     private ImageButton pauseButton;
 
+    private PopupWindowManager popupWindowManager;
+
     public Hud(GameScreen gameScreen) {
         AssetManager assetManager = ZombieGame.getAssetManager();
         Viewport viewPort = new FitViewport(ZombieGame.WIDTH, ZombieGame.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewPort, ZombieGame.getSpriteBatch());
         TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
         healthBarAtlas = assetManager.get("spritesheets/healthbar/healthbar.pack");
+
+        popupWindowManager = new PopupWindowManager(stage);
 
         currentHealth = new Image(healthBarAtlas.findRegion(String.valueOf(livesLeft)));
         Image currentWave = new Image(healthBarAtlas.findRegion("wave"));
@@ -92,7 +95,9 @@ public class Hud implements Disposable {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                gameScreen.setState(GameState.PAUSED);
+                if (gameScreen.getGameState().equals(GameState.RUNNING))
+                    gameScreen.setState(GameState.PAUSED);
+                else gameScreen.setState(GameState.RUNNING);
             }
         });
     }

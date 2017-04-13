@@ -78,6 +78,7 @@ public class GameScreen extends InputAdapter implements Screen {
         this.assetManager = ZombieGame.getAssetManager();
         this.batch = ZombieGame.getSpriteBatch();
         this.currentLevel = currentLevel;
+        gameState = GameState.RUNNING;
         showDebugLines = true;
     }
 
@@ -156,8 +157,6 @@ public class GameScreen extends InputAdapter implements Screen {
         //Clearing the array of zombies that collided with tha base int the previous frame
         clearDeadBodies();
 
-        timePassed += delta;
-
         //Render map
         mapRenderer.setView(camera);
         mapRenderer.render();
@@ -169,10 +168,15 @@ public class GameScreen extends InputAdapter implements Screen {
         //Box2D (Debug Lines)
         if (showDebugLines) box2DDebugRenderer.render(world, camera.combined);
 
-        world.step(delta, 6, 2);
+        //Box2D stepping, if game is paused
+        if (gameState.equals(GameState.RUNNING)) {
+            timePassed += delta;
+            world.step(delta, 6, 2);
+            zombieSpawner();
+        }
+
         batch.begin();
         updateZombieLocations(delta);
-        zombieSpawner();
         towerCreatorListener();
         updateTowers();
         batch.end();
@@ -191,12 +195,12 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     private void towerCreatorListener() {
-        /*if (Gdx.input.justTouched() && hud.getMoney() >= 50) {
+        if (Gdx.input.justTouched() && hud.getMoney() >= 50) {
             hud.setMoney(hud.getMoney() - 50);
             towers.add(new Tower(world, batch, assetManager,
                     (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - ZombieGame.WIDTH / 2),
                     (int) ((ZombieGame.HEIGHT - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - ZombieGame.HEIGHT / 2)));
-        }*/
+        }
     }
 
     private void updateZombieLocations(float delta) {
@@ -210,7 +214,7 @@ public class GameScreen extends InputAdapter implements Screen {
         for (Tower individualTower : towers) {
             individualTower.updateSpritePosition(camera.position.x, camera.position.y);
             individualTower.draw(Gdx.graphics.getDeltaTime());
-            individualTower.checkForZombiesInRange(this);
+            if (gameState.equals(GameState.RUNNING)) individualTower.checkForZombiesInRange(this);
         }
     }
 
@@ -315,5 +319,9 @@ public class GameScreen extends InputAdapter implements Screen {
 
     public void setState(GameState state) {
         this.gameState = state;
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 }

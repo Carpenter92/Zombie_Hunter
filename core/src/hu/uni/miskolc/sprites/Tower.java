@@ -18,7 +18,7 @@ import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.screens.GameScreen;
 import hu.uni.miskolc.states.TowerState;
 
-public class Tower implements Disposable{
+public class Tower implements Disposable {
 
     private static final int B2D_WIDTH = 32;
     private static final float SCALE = 0.50f;
@@ -27,7 +27,9 @@ public class Tower implements Disposable{
     private Animation<TextureAtlas.AtlasRegion> animationIdle;
     private Animation<TextureAtlas.AtlasRegion> animationShooting;
     private float elapsedTime;
+    private int shotDamage;
     private int range;
+    private float shootInterval;
     private boolean lookingLeft;
     private TowerState state;
 
@@ -42,6 +44,8 @@ public class Tower implements Disposable{
         this.batch = batch;
         this.xPos = xPos;
         this.yPos = yPos;
+        shotDamage = 10;
+        shootInterval = 0.1f;
         range = (int) (200 / ZombieGame.PPM);
         lookingLeft = false;
         defineTower();
@@ -53,7 +57,7 @@ public class Tower implements Disposable{
     public void checkForZombiesInRange(GameScreen screen) {
 
         //Every second check for zombies
-        if (elapsedTime > 1f) {
+        if (elapsedTime > shootInterval) {
             elapsedTime = 0f;
             Array<Zombie> zombies = screen.getZombies();
             //all zombies loop
@@ -62,7 +66,7 @@ public class Tower implements Disposable{
                 float y = current.getBox2dBody().getPosition().y;
                 //if zombie is in range, it gets shot
                 if ((((x - this.box2dBody.getPosition().x) * (x - this.box2dBody.getPosition().x)) + ((y - this.box2dBody.getPosition().y) * (y - this.box2dBody.getPosition().y))) < range * range) {
-                    current.getShot(20);
+                    current.getShot(shotDamage);
                     state = TowerState.SHOOTING;
                     if (x > this.box2dBody.getPosition().x && lookingLeft) flipSprite();
                     if (x < this.box2dBody.getPosition().x && !lookingLeft) flipSprite();
@@ -84,7 +88,7 @@ public class Tower implements Disposable{
 
     private void defineTower() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(xPos / ZombieGame.PPM , yPos / ZombieGame.PPM);
+        bdef.position.set(xPos / ZombieGame.PPM, yPos / ZombieGame.PPM);
 
         //The tower itself
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -92,7 +96,7 @@ public class Tower implements Disposable{
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius( Tower.B2D_WIDTH / ZombieGame.PPM);
+        shape.setRadius(Tower.B2D_WIDTH / ZombieGame.PPM);
         fdef.shape = shape;
         fdef.filter.categoryBits = GameScreen.DYNAMIC_ENTITY;
         fdef.filter.maskBits = GameScreen.STATIC_WALL_ENTITY;
@@ -106,7 +110,7 @@ public class Tower implements Disposable{
         TextureAtlas atlasShoot = ZombieGame.getAssetManager().get("spritesheets/soldier1/shoot/soldier1shoot.pack");
         animationIdle = new Animation<TextureAtlas.AtlasRegion>(0.5f, atlasIdle.getRegions());
         animationIdle.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-        animationShooting = new Animation<TextureAtlas.AtlasRegion>(0.10f, atlasShoot.getRegions());
+        animationShooting = new Animation<TextureAtlas.AtlasRegion>(shootInterval / 10, atlasShoot.getRegions());
         animationShooting.setPlayMode(Animation.PlayMode.NORMAL);
         atlasRegionWidth = (int) (atlasIdle.getRegions().first().getRegionWidth() * SCALE);
         atlasRegionHeight = (int) (atlasIdle.getRegions().first().getRegionHeight() * SCALE);
@@ -120,13 +124,13 @@ public class Tower implements Disposable{
         lookingLeft = true;
     }
 
-    public void updateSpritePosition(float camX, float camY)  {
+    public void updateSpritePosition(float camX, float camY) {
         xPos = (int) (box2dBody.getPosition().x * ZombieGame.PPM - (B2D_WIDTH * 2) - camX * ZombieGame.PPM + ZombieGame.WIDTH / 2);
-        yPos = (int) (box2dBody.getPosition().y * ZombieGame.PPM - (B2D_WIDTH) - camY*ZombieGame.PPM + ZombieGame.HEIGHT / 2);
+        yPos = (int) (box2dBody.getPosition().y * ZombieGame.PPM - (B2D_WIDTH) - camY * ZombieGame.PPM + ZombieGame.HEIGHT / 2);
     }
 
-    public void draw(float delta)  {
-        elapsedTime+=delta;
+    public void draw(float delta) {
+        elapsedTime += delta;
         if (!lookingLeft) {
             if (state.equals(TowerState.IDLE))
                 batch.draw(animationIdle.getKeyFrame(elapsedTime, true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);

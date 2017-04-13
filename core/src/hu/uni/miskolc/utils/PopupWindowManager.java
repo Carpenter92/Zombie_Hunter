@@ -29,6 +29,10 @@ public class PopupWindowManager {
         this.assetManager = ZombieGame.getAssetManager();
     }
 
+    public PopupWindowManager(Stage stage) {
+        this.stage = stage;
+    }
+
     public void createOptionsPopup() {
         if (stage.getActors().size == 5 || stage.getActors().size == 10) {
             Image popupWindow = new Image((Texture) assetManager.get("background/optionspopup.png"));
