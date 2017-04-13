@@ -76,10 +76,7 @@ public class MenuScreen extends ScreenAdapter {
         assetManager.load("sounds/buttonclick.mp3", Sound.class);
         assetManager.load("buttons/buttons.pack", TextureAtlas.class);
         assetManager.load("background/menuwall.jpg", Texture.class);
-        assetManager.load("buttons/optionsbuttons.pack", TextureAtlas.class);
         assetManager.load("background/optionspopup.png", Texture.class);
-        assetManager.load("buttons/levelthumbnails/levelthumbnails.pack", TextureAtlas.class);
-        assetManager.load("buttons/optionsbuttons.pack", TextureAtlas.class);
         assetManager.load("background/levelpopup.png", Texture.class);
         assetManager.finishLoading();
 
@@ -112,21 +109,21 @@ public class MenuScreen extends ScreenAdapter {
         //Wallpaper image
         background = new Image((Texture) assetManager.get("background/menuwall.jpg"));
         //New Game
-        newGameButton = new ImageButton(new TextureRegionDrawable(buttons.getRegions().get(0)),
-                new TextureRegionDrawable(buttons.getRegions().get(1)));
+        newGameButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("newgamebutton")),
+                new TextureRegionDrawable(buttons.findRegion("newgamebuttonpressed")));
         //Options
-        optionsButton = new ImageButton(new TextureRegionDrawable(buttons.getRegions().get(7)),
-                new TextureRegionDrawable(buttons.getRegions().get(8)));
+        optionsButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("optionsiconbutton")),
+                new TextureRegionDrawable(buttons.findRegion("optionsiconbuttonpressed")));
         //Exit
-        exitButton = new ImageButton(new TextureRegionDrawable(buttons.getRegions().get(5)),
-                new TextureRegionDrawable(buttons.getRegions().get(6)));
+        exitButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("exitbutton")),
+                new TextureRegionDrawable(buttons.findRegion("exitbuttonpressed")));
         //Continue (Check from savefile if available)
         if (hasContinueOption) {
-            continueButton = new ImageButton(new TextureRegionDrawable(buttons.getRegions().get(2)),
-                    new TextureRegionDrawable(buttons.getRegions().get(3)));
+            continueButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("continuebutton")),
+                    new TextureRegionDrawable(buttons.findRegion("continuebuttonpressed")));
         } else {
-            continueButton = new ImageButton(new TextureRegionDrawable(buttons.getRegions().get(4)),
-                    new TextureRegionDrawable(buttons.getRegions().get(4)));
+            continueButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("continuebuttoninactive")),
+                    new TextureRegionDrawable(buttons.findRegion("continuebuttoninactive")));
         }
     }
 
@@ -197,13 +194,8 @@ public class MenuScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         assetManager.unload("music/menu.mp3");
-        assetManager.unload("sounds/buttonclick.mp3");
-        assetManager.unload("buttons/buttons.pack");
         assetManager.unload("background/menuwall.jpg");
-        assetManager.unload("buttons/optionsbuttons.pack");
         assetManager.unload("background/optionspopup.png");
-        assetManager.unload("buttons/levelthumbnails/levelthumbnails.pack");
-        assetManager.unload("buttons/optionsbuttons.pack");
         assetManager.unload("background/levelpopup.png");
         stage.dispose();
         music.dispose();

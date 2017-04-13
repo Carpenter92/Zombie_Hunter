@@ -1,20 +1,29 @@
 package hu.uni.miskolc.hud;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import hu.uni.miskolc.ZombieGame;
+import hu.uni.miskolc.screens.GameScreen;
+import hu.uni.miskolc.states.GameState;
 
 public class Hud implements Disposable {
 
@@ -28,15 +37,24 @@ public class Hud implements Disposable {
     private Label moneyLabel;
     private TextureAtlas healthBarAtlas;
     private Image currentHealth;
+    private ImageButton startWaveButton;
+    private ImageButton pauseButton;
 
-    public Hud() {
+    public Hud(GameScreen gameScreen) {
+        AssetManager assetManager = ZombieGame.getAssetManager();
         Viewport viewPort = new FitViewport(ZombieGame.WIDTH, ZombieGame.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewPort, ZombieGame.getSpriteBatch());
+        TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
+        healthBarAtlas = assetManager.get("spritesheets/healthbar/healthbar.pack");
 
-        healthBarAtlas = ZombieGame.getAssetManager().get("spritesheets/healthbar/healthbar.pack");
         currentHealth = new Image(healthBarAtlas.findRegion(String.valueOf(livesLeft)));
         Image currentWave = new Image(healthBarAtlas.findRegion("wave"));
         Image currentMoney = new Image(healthBarAtlas.findRegion("money"));
+        startWaveButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("forwardbutton")),
+                new TextureRegionDrawable(buttons.findRegion("forwardbuttonpressed")));
+        pauseButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("pausegamebutton")),
+                new TextureRegionDrawable(buttons.findRegion("pausegamebuttonpressed")));
+
         waveLabel = new Label(String.format("%01d", wave), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         moneyLabel = new Label(String.format("%03d", money), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         waveLabel.setFontScale(2.0f);
@@ -47,12 +65,36 @@ public class Hud implements Disposable {
         stage.addActor(currentMoney);
         stage.addActor(waveLabel);
         stage.addActor(moneyLabel);
+        stage.addActor(startWaveButton);
+        stage.addActor(pauseButton);
 
         currentHealth.setPosition(stage.getWidth() / 5, 9.3f * stage.getHeight() / 10, Align.center);
         currentWave.setPosition(stage.getWidth() / 2, 9.3f * stage.getHeight() / 10, Align.center);
-        waveLabel.setPosition(0.95f * stage.getWidth() / 2, 9.3f * stage.getHeight() / 10, Align.center);
+        waveLabel.setPosition(0.93f * stage.getWidth() / 2, 9.3f * stage.getHeight() / 10, Align.center);
         currentMoney.setPosition(4 * stage.getWidth() / 5, 9.3f * stage.getHeight() / 10, Align.center);
         moneyLabel.setPosition(4.05f * stage.getWidth() / 5, 9.3f * stage.getHeight() / 10, Align.center);
+        startWaveButton.setPosition(4.6f * stage.getWidth() / 5, 1.3f * stage.getHeight() / 10, Align.center);
+        pauseButton.setPosition(0.4f * stage.getWidth() / 5, 1.3f * stage.getHeight() / 10, Align.center);
+
+        addOnClickListeners(gameScreen);
+    }
+
+    private void addOnClickListeners(final GameScreen gameScreen) {
+        startWaveButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+
+            }
+        });
+
+        pauseButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                gameScreen.setState(GameState.PAUSED);
+            }
+        });
     }
 
     public void update(float delta) {

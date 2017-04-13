@@ -1,0 +1,75 @@
+
+zombie1.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Walk 1
+  rotate: false
+  xy: 0, 260
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 2
+  rotate: false
+  xy: 108, 260
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 3
+  rotate: false
+  xy: 0, 0
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 4
+  rotate: false
+  xy: 108, 130
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 5
+  rotate: false
+  xy: 216, 260
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 6
+  rotate: false
+  xy: 108, 0
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 7
+  rotate: false
+  xy: 216, 130
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 8
+  rotate: false
+  xy: 324, 260
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 9
+  rotate: false
+  xy: 216, 0
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1
+Walk 10
+  rotate: false
+  xy: 0, 130
+  size: 107, 129
+  orig: 107, 129
+  offset: 0, 0
+  index: -1

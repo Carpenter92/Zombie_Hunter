@@ -1,8 +1,8 @@
 package hu.uni.miskolc.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -29,6 +29,7 @@ import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.hud.Hud;
 import hu.uni.miskolc.sprites.Tower;
 import hu.uni.miskolc.sprites.Zombie;
+import hu.uni.miskolc.states.GameState;
 import hu.uni.miskolc.utils.Box2DObjectCreator;
 import hu.uni.miskolc.utils.ZombieContactListener;
 
@@ -46,12 +47,14 @@ public class GameScreen extends InputAdapter implements Screen {
     private int currentLevel;
     private float timePassed;
     private int zombiesSpawned;
+    private GameState gameState;
 
     //Camera
     private OrthographicCamera camera;
     private Viewport viewport;
     private SpriteBatch batch;
     private AssetManager assetManager;
+    private Vector2 lastTouch = new Vector2();
 
     //Hud
     private Hud hud;
@@ -91,10 +94,15 @@ public class GameScreen extends InputAdapter implements Screen {
         viewport = new FitViewport(ZombieGame.WIDTH / ZombieGame.PPM, ZombieGame.HEIGHT / ZombieGame.PPM, camera);
         viewport.apply(true);
         camera.position.set((ZombieGame.WIDTH / 2 + MAP_OFFSET_X) / ZombieGame.PPM, (ZombieGame.HEIGHT / 2 + MAP_OFFSET_Y) / ZombieGame.PPM, 0);
-        hud = new Hud();
+        hud = new Hud(this);
         hud.setWave(saveFile.getInteger("currentWave", 1));
         hud.setMoney(saveFile.getInteger("currentMoney", 100));
         hud.setLivesLeft(saveFile.getInteger("currentLivesLeft", 10));
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(hud.getStage());
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
         initializeMap();
         createBox2DWorld();
@@ -102,7 +110,6 @@ public class GameScreen extends InputAdapter implements Screen {
 
     private void initializeAssets() {
         Box2D.init();
-        Gdx.input.setInputProcessor(this);
         assetManager.load("music/ingame1.mp3", Music.class);
         assetManager.load("sounds/shoot.mp3", Sound.class);
         assetManager.load("spritesheets/healthbar/healthbar.pack", TextureAtlas.class);
@@ -162,14 +169,13 @@ public class GameScreen extends InputAdapter implements Screen {
         //Box2D (Debug Lines)
         if (showDebugLines) box2DDebugRenderer.render(world, camera.combined);
 
-        handleInput(delta);
+        world.step(delta, 6, 2);
         batch.begin();
         updateZombieLocations(delta);
         zombieSpawner();
         towerCreatorListener();
         updateTowers();
         batch.end();
-        world.step(delta, 6, 2);
     }
 
     private void zombieSpawner() {
@@ -185,12 +191,12 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     private void towerCreatorListener() {
-        if (Gdx.input.justTouched() && hud.getMoney() >= 50) {
+        /*if (Gdx.input.justTouched() && hud.getMoney() >= 50) {
             hud.setMoney(hud.getMoney() - 50);
             towers.add(new Tower(world, batch, assetManager,
                     (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - ZombieGame.WIDTH / 2),
                     (int) ((ZombieGame.HEIGHT - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - ZombieGame.HEIGHT / 2)));
-        }
+        }*/
     }
 
     private void updateZombieLocations(float delta) {
@@ -226,25 +232,18 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     }
 
-    //Temporary method for moving the camera
-    private void handleInput(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            zombiesSpawned = 0;
-            hud.setWave(hud.getWave() + 1);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-            screenManager.setScreen(new MenuScreen(screenManager));
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT) && showDebugLines)
-            showDebugLines = false;
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_RIGHT) && !showDebugLines)
-            showDebugLines = true;
-
-
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        lastTouch.set(screenX, screenY);
+        return super.touchDown(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        camera.position.set(((ZombieGame.WIDTH - screenX) / ZombieGame.PPM), (screenY / ZombieGame.PPM), 0);
+        Vector2 newTouch = new Vector2(screenX, screenY);
+        Vector2 delta = newTouch.cpy().sub(lastTouch);
+        lastTouch = newTouch;
+        camera.position.set(camera.position.x - delta.x / ZombieGame.PPM, camera.position.y + delta.y / ZombieGame.PPM, 0);
 
         if (camera.position.x < (0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM)
             camera.position.set(((0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM), camera.position.y, 0);
@@ -279,7 +278,7 @@ public class GameScreen extends InputAdapter implements Screen {
     public void hide() {
         saveFile.putInteger("currentLivesLeft", hud.getLivesLeft());
         saveFile.putInteger("currentWave", hud.getWave());
-        saveFile.putInteger("currentMoney", hud.getMoney());
+        saveFile.putInteger("currentMoney", hud.getMoney() + towers.size * 50);
         saveFile.flush();
         dispose();
     }
@@ -314,4 +313,7 @@ public class GameScreen extends InputAdapter implements Screen {
         return zombies;
     }
 
+    public void setState(GameState state) {
+        this.gameState = state;
+    }
 }

@@ -31,15 +31,15 @@ public class PopupWindowManager {
 
     public void createOptionsPopup() {
         if (stage.getActors().size == 5 || stage.getActors().size == 10) {
-            TextureAtlas optionsButtons = assetManager.get("buttons/optionsbuttons.pack");
-
             Image popupWindow = new Image((Texture) assetManager.get("background/optionspopup.png"));
-            ImageButton musicButton = new ImageButton(new TextureRegionDrawable(optionsButtons.getRegions().get(4)),
-                    new TextureRegionDrawable(optionsButtons.getRegions().get(5)), new TextureRegionDrawable(optionsButtons.getRegions().get(5)));
-            ImageButton soundButton = new ImageButton(new TextureRegionDrawable(optionsButtons.getRegions().get(0)),
-                    new TextureRegionDrawable(optionsButtons.getRegions().get(1)), new TextureRegionDrawable(optionsButtons.getRegions().get(1)));
-            ImageButton backButton = new ImageButton(new TextureRegionDrawable(optionsButtons.getRegions().get(2)),
-                    new TextureRegionDrawable(optionsButtons.getRegions().get(3)));
+            TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
+
+            ImageButton musicButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("musicoff")),
+                    new TextureRegionDrawable(buttons.findRegion("musicon")), new TextureRegionDrawable(buttons.findRegion("musicon")));
+            ImageButton soundButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("audiooff")),
+                    new TextureRegionDrawable(buttons.findRegion("audioon")), new TextureRegionDrawable(buttons.findRegion("audioon")));
+            ImageButton backButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("backbutton")),
+                    new TextureRegionDrawable(buttons.findRegion("backbuttonpressed")));
 
             stage.addActor(popupWindow);
             stage.addActor(musicButton);
@@ -103,16 +103,14 @@ public class PopupWindowManager {
     }
 
     public void createLevelSelectorPopup(final ZombieGame screenManager) {
-
-        TextureAtlas levelButtons = assetManager.get("buttons/levelthumbnails/levelthumbnails.pack");
-        TextureAtlas optionsButtons = assetManager.get("buttons/optionsbuttons.pack");
-
+        TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
         Image popupWindow = new Image((Texture) assetManager.get("background/levelpopup.png"));
-        ImageButton firstButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(levelButtons.getRegions().get(0))));
-        ImageButton secondButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(levelButtons.getRegions().get(1))));
-        ImageButton thirdButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(levelButtons.getRegions().get(2))));
-        ImageButton backButton = new ImageButton(new TextureRegionDrawable(optionsButtons.getRegions().get(2)),
-                new TextureRegionDrawable(optionsButtons.getRegions().get(3)));
+
+        ImageButton firstButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(buttons.findRegion("map1thumbnail"))));
+        ImageButton secondButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(buttons.findRegion("map2thumbnail"))));
+        ImageButton thirdButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(buttons.findRegion("map3thumbnail"))));
+        ImageButton backButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("backbutton")),
+                new TextureRegionDrawable(buttons.findRegion("backbuttonpressed")));
 
         stage.addActor(popupWindow);
         stage.addActor(firstButton);

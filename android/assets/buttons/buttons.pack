@@ -5,64 +5,183 @@ filter: Nearest,Nearest
 repeat: none
 newgamebutton
   rotate: false
-  xy: 1, 291
+  xy: 2, 878
   size: 348, 142
   orig: 348, 142
   offset: 0, 0
   index: -1
 newgamebuttonpressed
   rotate: false
-  xy: 1, 147
+  xy: 2, 734
   size: 348, 142
   orig: 348, 142
   offset: 0, 0
   index: -1
 continuebutton
   rotate: false
-  xy: 351, 290
+  xy: 352, 877
   size: 343, 143
   orig: 343, 143
   offset: 0, 0
   index: -1
 continuebuttonpressed
   rotate: false
-  xy: 1, 2
+  xy: 2, 589
   size: 343, 143
   orig: 343, 143
   offset: 0, 0
   index: -1
 continuebuttoninactive
   rotate: false
-  xy: 351, 145
+  xy: 2, 444
   size: 342, 143
   orig: 342, 143
   offset: 0, 0
   index: -1
 exitbutton
   rotate: false
-  xy: 696, 291
+  xy: 697, 878
   size: 280, 142
   orig: 280, 142
   offset: 0, 0
   index: -1
 exitbuttonpressed
   rotate: false
-  xy: 346, 1
+  xy: 2, 300
   size: 280, 142
   orig: 280, 142
   offset: 0, 0
   index: -1
+map1thumbnail
+  rotate: false
+  xy: 2, 146
+  size: 254, 152
+  orig: 254, 152
+  offset: 0, 0
+  index: -1
+map2thumbnail
+  rotate: false
+  xy: 352, 723
+  size: 254, 152
+  orig: 254, 152
+  offset: 0, 0
+  index: -1
+map3thumbnail
+  rotate: false
+  xy: 347, 569
+  size: 254, 152
+  orig: 254, 152
+  offset: 0, 0
+  index: -1
 optionsiconbutton
   rotate: false
-  xy: 628, 1
+  xy: 2, 2
   size: 142, 142
   orig: 142, 142
   offset: 0, 0
   index: -1
 optionsiconbuttonpressed
   rotate: false
-  xy: 695, 146
+  xy: 346, 425
   size: 141, 142
   orig: 141, 142
+  offset: 0, 0
+  index: -1
+forwardbutton
+  rotate: false
+  xy: 489, 433
+  size: 133, 134
+  orig: 133, 134
+  offset: 0, 0
+  index: -1
+forwardbuttonpressed
+  rotate: false
+  xy: 146, 10
+  size: 133, 134
+  orig: 133, 134
+  offset: 0, 0
+  index: -1
+pausegamebutton
+  rotate: false
+  xy: 608, 741
+  size: 133, 134
+  orig: 133, 134
+  offset: 0, 0
+  index: -1
+pausegamebuttonpressed
+  rotate: false
+  xy: 743, 742
+  size: 133, 134
+  orig: 133, 134
+  offset: 0, 0
+  index: -1
+tickbutton
+  rotate: false
+  xy: 878, 742
+  size: 133, 134
+  orig: 133, 134
+  offset: 0, 0
+  index: -1
+tickbuttonpressed
+  rotate: false
+  xy: 284, 289
+  size: 133, 134
+  orig: 133, 134
+  offset: 0, 0
+  index: -1
+xbutton
+  rotate: false
+  xy: 258, 153
+  size: 133, 134
+  orig: 133, 134
+  offset: 0, 0
+  index: -1
+xbuttonpressed
+  rotate: false
+  xy: 281, 17
+  size: 133, 134
+  orig: 133, 134
+  offset: 0, 0
+  index: -1
+audiooff
+  rotate: false
+  xy: 419, 289
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+audioon
+  rotate: false
+  xy: 393, 153
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+backbutton
+  rotate: false
+  xy: 416, 17
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+backbuttonpressed
+  rotate: false
+  xy: 553, 297
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+musicoff
+  rotate: false
+  xy: 527, 153
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+musicon
+  rotate: false
+  xy: 550, 17
+  size: 132, 134
+  orig: 132, 134
   offset: 0, 0
   index: -1
