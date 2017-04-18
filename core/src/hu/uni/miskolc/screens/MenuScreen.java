@@ -182,6 +182,7 @@ public class MenuScreen extends ScreenAdapter {
     public void hide() {
         super.hide();
         saveFile.flush();
+        music.stop();
         dispose();
     }
 

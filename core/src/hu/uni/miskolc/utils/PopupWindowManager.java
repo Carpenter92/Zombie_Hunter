@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.Align;
 import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.screens.GameScreen;
 import hu.uni.miskolc.screens.MenuScreen;
+import hu.uni.miskolc.states.GameState;
 
 public class PopupWindowManager {
 
@@ -60,7 +61,6 @@ public class PopupWindowManager {
             stage.addActor(musicLabel);
             stage.addActor(backButton);
 
-
             popupWindow.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
             musicButton.setPosition(6 * stage.getWidth() / 10, 6 * stage.getHeight() / 10, Align.center);
             musicLabel.setPosition(4 * stage.getWidth() / 10, 6 * stage.getHeight() / 10, Align.center);
@@ -78,7 +78,6 @@ public class PopupWindowManager {
                 public void tap(InputEvent event, float x, float y, int count, int button) {
                     super.tap(event, x, y, count, button);
                     stage.getActors().removeRange(stage.getActors().size - 6, stage.getActors().size - 1);
-                    saveFile.flush();
                     MenuScreen.buttonClick.play(ZombieGame.volume);
                 }
             });
@@ -90,9 +89,11 @@ public class PopupWindowManager {
                     if (saveFile.getBoolean("sounds", true)) {
                         ZombieGame.volume = 0.0f;
                         saveFile.putBoolean("sounds", false);
+                        saveFile.flush();
                     } else {
                         ZombieGame.volume = 1.0f;
                         saveFile.putBoolean("sounds", true);
+                        saveFile.flush();
                     }
                     MenuScreen.buttonClick.play(ZombieGame.volume);
                 }
@@ -105,10 +106,12 @@ public class PopupWindowManager {
                     if (saveFile.getBoolean("music", true)) {
                         MenuScreen.music.stop();
                         saveFile.putBoolean("music", false);
+                        saveFile.flush();
                     } else {
                         MenuScreen.music.play();
                         MenuScreen.music.setLooping(true);
                         saveFile.putBoolean("music", true);
+                        saveFile.flush();
                     }
                     MenuScreen.buttonClick.play(ZombieGame.volume);
                 }
@@ -185,10 +188,91 @@ public class PopupWindowManager {
         });
     }
 
-    public void createPausePopup(ZombieGame screenManager) {
+    public void createPausePopup(final ZombieGame screenManager, final GameScreen screen) {
         Image popupWindow = new Image((Texture) assetManager.get("background/popup.png"));
+        TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
+
+        //Exit
+        ImageButton exitButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("exitbutton")),
+                new TextureRegionDrawable(buttons.findRegion("exitbuttonpressed")));
+        //Continue
+        ImageButton continueButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("continuebutton")),
+                new TextureRegionDrawable(buttons.findRegion("continuebuttonpressed")));
+        ImageButton debugButton;
+
+        if (screen.isShowDebugLines()) {
+            debugButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("tickbutton")),
+                    new TextureRegionDrawable(buttons.findRegion("tickbuttonpressed")), new TextureRegionDrawable(buttons.findRegion("xbutton")));
+        } else {
+            debugButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("xbutton")),
+                    new TextureRegionDrawable(buttons.findRegion("xbuttonpressed")), new TextureRegionDrawable(buttons.findRegion("tickbuttonpressed")));
+        }
+
+        BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal("fonts/myfont.fnt"));
+        Label debugLabel = new Label("Debug lines:", new Label.LabelStyle(bitmapFont, Color.WHITE));
+
         stage.addActor(popupWindow);
+        stage.addActor(continueButton);
+        stage.addActor(exitButton);
+        stage.addActor(debugButton);
+        stage.addActor(debugLabel);
+
+        continueButton.setPosition(stage.getWidth() / 2, 3.5f * stage.getHeight() / 5, Align.center);
+        exitButton.setPosition(stage.getWidth() / 2, 2.5f * stage.getHeight() / 5, Align.center);
+        debugButton.setPosition(3 * stage.getWidth() / 5, 1.5f * stage.getHeight() / 5, Align.center);
+        debugLabel.setPosition(2 * stage.getWidth() / 5, 1.5f * stage.getHeight() / 5, Align.center);
         popupWindow.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+
+        continueButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                stage.getActors().removeRange(stage.getActors().size - 5, stage.getActors().size - 1);
+                screen.setState(GameState.RUNNING);
+                MenuScreen.buttonClick.play(ZombieGame.volume);
+            }
+        });
+        exitButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                screenManager.setScreen(new MenuScreen(screenManager));
+                MenuScreen.buttonClick.play(ZombieGame.volume);
+            }
+        });
+        debugButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                if (screen.isShowDebugLines())
+                    screen.setShowDebugLines(false);
+                else
+                    screen.setShowDebugLines(true);
+            }
+        });
+    }
+
+    public void createTowerSelectorPopUp(final GameScreen screen) {
+        Image popupWindow = new Image((Texture) assetManager.get("background/popup.png"));
+        TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
+        ImageButton backButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("backbutton")),
+                new TextureRegionDrawable(buttons.findRegion("backbuttonpressed")));
+
+        stage.addActor(popupWindow);
+        stage.addActor(backButton);
+
+        popupWindow.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+        backButton.setPosition(5 * stage.getWidth() / 10, 1.5f * stage.getHeight() / 10, Align.center);
+
+        backButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                stage.getActors().removeRange(stage.getActors().size - 2, stage.getActors().size - 1);
+                screen.setState(GameState.RUNNING);
+                MenuScreen.buttonClick.play(ZombieGame.volume);
+            }
+        });
     }
 
     private void resetInGameValues() {

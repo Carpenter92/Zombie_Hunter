@@ -54,13 +54,15 @@ public class GameScreen extends InputAdapter implements Screen {
     private float timePassed;
     private int zombiesSpawned;
     private GameState gameState;
+    private Music music;
 
     //Camera
     private OrthographicCamera camera;
     private Viewport viewport;
     private SpriteBatch batch;
     private AssetManager assetManager;
-    private Vector2 lastTouch = new Vector2();
+    private Vector2 lastTouch;
+    private long lastTouchTime;
 
     //Hud
     private Hud hud;
@@ -86,7 +88,8 @@ public class GameScreen extends InputAdapter implements Screen {
         this.batch = ZombieGame.getSpriteBatch();
         this.currentLevel = currentLevel;
         gameState = GameState.RUNNING;
-        showDebugLines = true;
+        lastTouch = new Vector2();
+        showDebugLines = false;
     }
 
     @Override
@@ -137,7 +140,7 @@ public class GameScreen extends InputAdapter implements Screen {
         assetManager.load("spritesheets/soldier5/shoot/soldiershoot.pack", TextureAtlas.class);
         assetManager.finishLoading();
 
-        Music music = assetManager.get("music/ingame1.mp3");
+        music = assetManager.get("music/ingame1.mp3");
         if (saveFile.getBoolean("music", true)) music.play();
 
         //Creating the empty zombies and towers arrays
@@ -279,26 +282,32 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         lastTouch.set(screenX, screenY);
+        if (System.currentTimeMillis() - lastTouchTime <= 250 && gameState.equals(GameState.RUNNING)) {
+            hud.doubleClickPopUp(this);
+        }
+        lastTouchTime = System.currentTimeMillis();
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
+    //Camera
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Vector2 newTouch = new Vector2(screenX, screenY);
-        Vector2 delta = newTouch.cpy().sub(lastTouch);
-        lastTouch = newTouch;
-        camera.position.set(camera.position.x - delta.x / ZombieGame.PPM, camera.position.y + delta.y / ZombieGame.PPM, 0);
-
-        if (camera.position.x < (0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM)
-            camera.position.set(((0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM), camera.position.y, 0);
-        if (camera.position.x > (1536 - ZombieGame.WIDTH / 2) / ZombieGame.PPM)
-            camera.position.set(((1536 - ZombieGame.WIDTH / 2) / ZombieGame.PPM), camera.position.y, 0);
-        if (camera.position.y > (864 - ZombieGame.HEIGHT / 2) / ZombieGame.PPM)
-            camera.position.set(camera.position.x, (864 - ZombieGame.HEIGHT / 2) / ZombieGame.PPM, 0);
-        if (camera.position.y < (0 + ZombieGame.HEIGHT / 2) / ZombieGame.PPM)
-            camera.position.set(camera.position.x, (0 + ZombieGame.HEIGHT / 2) / ZombieGame.PPM, 0);
-
-        camera.update();
+        //Camera movement with touch gesture, limited to map size
+        if (gameState.equals(GameState.RUNNING)) {
+            Vector2 newTouch = new Vector2(screenX, screenY);
+            Vector2 delta = newTouch.cpy().sub(lastTouch);
+            lastTouch = newTouch;
+            camera.position.set(camera.position.x - delta.x / ZombieGame.PPM, camera.position.y + delta.y / ZombieGame.PPM, 0);
+            if (camera.position.x < (0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM)
+                camera.position.set(((0 + ZombieGame.WIDTH / 2) / ZombieGame.PPM), camera.position.y, 0);
+            if (camera.position.x > (1536 - ZombieGame.WIDTH / 2) / ZombieGame.PPM)
+                camera.position.set(((1536 - ZombieGame.WIDTH / 2) / ZombieGame.PPM), camera.position.y, 0);
+            if (camera.position.y > (864 - ZombieGame.HEIGHT / 2) / ZombieGame.PPM)
+                camera.position.set(camera.position.x, (864 - ZombieGame.HEIGHT / 2) / ZombieGame.PPM, 0);
+            if (camera.position.y < (0 + ZombieGame.HEIGHT / 2) / ZombieGame.PPM)
+                camera.position.set(camera.position.x, (0 + ZombieGame.HEIGHT / 2) / ZombieGame.PPM, 0);
+            camera.update();
+        }
         return super.touchDragged(screenX, screenY, pointer);
     }
 
@@ -324,6 +333,7 @@ public class GameScreen extends InputAdapter implements Screen {
         saveFile.putInteger("currentWave", hud.getWave());
         saveFile.putInteger("currentMoney", hud.getMoney() + towers.size * 50);
         saveFile.flush();
+        music.stop();
         dispose();
     }
 
@@ -355,6 +365,7 @@ public class GameScreen extends InputAdapter implements Screen {
         hud.dispose();
     }
 
+    //GETTERS AND SETTERS
     public Hud getHud() {
         return hud;
     }
@@ -377,5 +388,13 @@ public class GameScreen extends InputAdapter implements Screen {
 
     public void setZombiesSpawned() {
         zombiesSpawned = 0;
+    }
+
+    public boolean isShowDebugLines() {
+        return showDebugLines;
+    }
+
+    public void setShowDebugLines(boolean showDebugLines) {
+        this.showDebugLines = showDebugLines;
     }
 }

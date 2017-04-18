@@ -97,14 +97,19 @@ public class Hud implements Disposable {
                 super.tap(event, x, y, count, button);
                 if (gameScreen.getGameState().equals(GameState.RUNNING)) {
                     gameScreen.setState(GameState.PAUSED);
-                    popupWindowManager.createPausePopup(gameScreen.getScreenManager());
+                    popupWindowManager.createPausePopup(gameScreen.getScreenManager(), gameScreen);
                 } else {
                     gameScreen.setState(GameState.RUNNING);
-                    stage.getActors().removeIndex(stage.getActors().size - 1);
+                    stage.getActors().removeRange(stage.getActors().size - 5, stage.getActors().size - 1);
                 }
 
             }
         });
+    }
+
+    public void doubleClickPopUp(GameScreen gameScreen) {
+        gameScreen.setState(GameState.PAUSED);
+        popupWindowManager.createTowerSelectorPopUp(gameScreen);
     }
 
     public void update(float delta) {
