@@ -1,5 +1,6 @@
 package hu.uni.miskolc.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -21,23 +22,24 @@ import hu.uni.miskolc.states.TowerState;
 public class Tower implements Disposable {
 
     private static final int B2D_WIDTH = 32;
-    private static final float SCALE = 0.50f;
+    static final float SCALE = 0.50f;
 
     private SpriteBatch batch;
-    private Animation<TextureAtlas.AtlasRegion> animationIdle;
-    private Animation<TextureAtlas.AtlasRegion> animationShooting;
-    private float elapsedTime;
-    private int shotDamage;
-    private int range;
-    private float shootInterval;
-    private boolean lookingLeft;
-    private TowerState state;
+    Animation<TextureAtlas.AtlasRegion> animationIdle;
+    Animation<TextureAtlas.AtlasRegion> animationShooting;
+    float elapsedTime;
+    int shotDamage;
+    int range;
+    float shootInterval;
+    boolean lookingLeft;
+    TowerState state;
 
     private World world;
-    private Body box2dBody;
-    private Sound shootSound;
+    Body box2dBody;
+    Sound shootSound;
 
-    private int atlasRegionWidth, atlasRegionHeight, xPos, yPos;
+    int atlasRegionWidth, atlasRegionHeight;
+    private int xPos, yPos;
 
     public Tower(World world, SpriteBatch batch, AssetManager assetManager, int xPos, int yPos) {
         this.world = world;
@@ -45,8 +47,8 @@ public class Tower implements Disposable {
         this.xPos = xPos;
         this.yPos = yPos;
         shotDamage = 10;
-        shootInterval = 0.1f;
-        range = (int) (200 / ZombieGame.PPM);
+        shootInterval = 1.0f;
+        range = (int) (210 / ZombieGame.PPM);
         lookingLeft = false;
         defineTower();
         state = TowerState.IDLE;
@@ -55,7 +57,7 @@ public class Tower implements Disposable {
     }
 
     public void checkForZombiesInRange(GameScreen screen) {
-
+        elapsedTime += Gdx.graphics.getDeltaTime();
         //Every second check for zombies
         if (elapsedTime > shootInterval) {
             elapsedTime = 0f;
@@ -105,9 +107,9 @@ public class Tower implements Disposable {
         shape.dispose();
     }
 
-    private void createAnimation() {
-        TextureAtlas atlasIdle = ZombieGame.getAssetManager().get("spritesheets/soldier1/idle/soldier1idle.pack");
-        TextureAtlas atlasShoot = ZombieGame.getAssetManager().get("spritesheets/soldier1/shoot/soldier1shoot.pack");
+    protected void createAnimation() {
+        TextureAtlas atlasIdle = ZombieGame.getAssetManager().get("spritesheets/soldier1/idle/soldieridle.pack");
+        TextureAtlas atlasShoot = ZombieGame.getAssetManager().get("spritesheets/soldier1/shoot/soldiershoot.pack");
         animationIdle = new Animation<TextureAtlas.AtlasRegion>(0.5f, atlasIdle.getRegions());
         animationIdle.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         animationShooting = new Animation<TextureAtlas.AtlasRegion>(shootInterval / 10, atlasShoot.getRegions());
@@ -116,7 +118,7 @@ public class Tower implements Disposable {
         atlasRegionHeight = (int) (atlasIdle.getRegions().first().getRegionHeight() * SCALE);
     }
 
-    private void flipSprite() {
+    void flipSprite() {
         if (lookingLeft) {
             lookingLeft = false;
             return;
@@ -130,7 +132,6 @@ public class Tower implements Disposable {
     }
 
     public void draw(float delta) {
-        elapsedTime += delta;
         if (!lookingLeft) {
             if (state.equals(TowerState.IDLE))
                 batch.draw(animationIdle.getKeyFrame(elapsedTime, true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);

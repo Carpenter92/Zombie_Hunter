@@ -76,8 +76,7 @@ public class MenuScreen extends ScreenAdapter {
         assetManager.load("sounds/buttonclick.mp3", Sound.class);
         assetManager.load("buttons/buttons.pack", TextureAtlas.class);
         assetManager.load("background/menuwall.jpg", Texture.class);
-        assetManager.load("background/optionspopup.png", Texture.class);
-        assetManager.load("background/levelpopup.png", Texture.class);
+        assetManager.load("background/popup.png", Texture.class);
         assetManager.finishLoading();
 
         music = assetManager.get("music/menu.mp3");
@@ -195,8 +194,6 @@ public class MenuScreen extends ScreenAdapter {
     public void dispose() {
         assetManager.unload("music/menu.mp3");
         assetManager.unload("background/menuwall.jpg");
-        assetManager.unload("background/optionspopup.png");
-        assetManager.unload("background/levelpopup.png");
         stage.dispose();
         music.dispose();
         buttonClick.dispose();

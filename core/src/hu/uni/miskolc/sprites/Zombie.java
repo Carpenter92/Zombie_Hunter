@@ -1,6 +1,7 @@
 package hu.uni.miskolc.sprites;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -80,15 +81,15 @@ public class Zombie implements Disposable {
     }
 
     public void updateSpritePosition(float camX, float camY) {
+        elapsedTime += Gdx.graphics.getDeltaTime();
+        if (elapsedTime > 1.2f)
+            elapsedTime = 0f;
         xPos = (int) (box2dBody.getPosition().x * ZombieGame.PPM - (B2D_WIDTH) - camX * ZombieGame.PPM + ZombieGame.WIDTH / 2);
         yPos = (int) (box2dBody.getPosition().y * ZombieGame.PPM - (B2D_WIDTH / 2) - camY * ZombieGame.PPM + ZombieGame.HEIGHT / 2);
         lookingLeft = box2dBody.getLinearVelocity().x < 0;
     }
 
     public void draw(float delta) {
-        elapsedTime += delta;
-        if (elapsedTime > 1.2f)
-            elapsedTime = 0f;
         if (lookingLeft)
             batch.draw(animation.getKeyFrame(elapsedTime, true), xPos + atlasRegionWidth, yPos, -atlasRegionWidth, atlasRegionHeight);
         else

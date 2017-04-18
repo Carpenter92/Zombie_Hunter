@@ -1,5 +1,6 @@
 package hu.uni.miskolc.hud;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -58,10 +59,8 @@ public class Hud implements Disposable {
         pauseButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("pausegamebutton")),
                 new TextureRegionDrawable(buttons.findRegion("pausegamebuttonpressed")));
 
-        waveLabel = new Label(String.format("%01d", wave), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        moneyLabel = new Label(String.format("%03d", money), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        waveLabel.setFontScale(2.0f);
-        moneyLabel.setFontScale(2.0f);
+        waveLabel = new Label(String.format("%01d", wave), new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/myfont.fnt")), Color.WHITE));
+        moneyLabel = new Label(String.format("%03d", money), new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/myfont.fnt")), Color.WHITE));
 
         stage.addActor(currentHealth);
         stage.addActor(currentWave);
@@ -87,7 +86,8 @@ public class Hud implements Disposable {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-
+                gameScreen.setZombiesSpawned();
+                wave++;
             }
         });
 
@@ -95,9 +95,14 @@ public class Hud implements Disposable {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                if (gameScreen.getGameState().equals(GameState.RUNNING))
+                if (gameScreen.getGameState().equals(GameState.RUNNING)) {
                     gameScreen.setState(GameState.PAUSED);
-                else gameScreen.setState(GameState.RUNNING);
+                    popupWindowManager.createPausePopup(gameScreen.getScreenManager());
+                } else {
+                    gameScreen.setState(GameState.RUNNING);
+                    stage.getActors().removeIndex(stage.getActors().size - 1);
+                }
+
             }
         });
     }

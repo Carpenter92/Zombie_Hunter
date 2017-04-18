@@ -1,6 +1,7 @@
 package hu.uni.miskolc.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
@@ -28,9 +29,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.hud.Hud;
 import hu.uni.miskolc.sprites.Tower;
+import hu.uni.miskolc.sprites.TowerMachineGun;
+import hu.uni.miskolc.sprites.TowerRanged;
+import hu.uni.miskolc.sprites.TowerShotgun;
+import hu.uni.miskolc.sprites.TowerSlow;
 import hu.uni.miskolc.sprites.Zombie;
 import hu.uni.miskolc.states.GameState;
 import hu.uni.miskolc.utils.Box2DObjectCreator;
+import hu.uni.miskolc.utils.WaveManager;
 import hu.uni.miskolc.utils.ZombieContactListener;
 
 public class GameScreen extends InputAdapter implements Screen {
@@ -70,6 +76,7 @@ public class GameScreen extends InputAdapter implements Screen {
     public Array<Body> toRemove = new Array<Body>();
 
     //Objects
+    private WaveManager waveManager;
     private Array<Zombie> zombies;
     private Array<Tower> towers;
 
@@ -114,14 +121,20 @@ public class GameScreen extends InputAdapter implements Screen {
         assetManager.load("music/ingame1.mp3", Music.class);
         assetManager.load("sounds/shoot.mp3", Sound.class);
         assetManager.load("spritesheets/healthbar/healthbar.pack", TextureAtlas.class);
+        //Zombie textures
         assetManager.load("spritesheets/zombie1/zombie1.pack", TextureAtlas.class);
         assetManager.load("spritesheets/zombie2/zombie2.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/soldier1/idle/soldier1idle.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/soldier1/shoot/soldier1shoot.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/soldier2/soldier2.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/soldier3/soldier3.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/soldier4/soldier4.pack", TextureAtlas.class);
-        assetManager.load("spritesheets/soldier5/soldier5.pack", TextureAtlas.class);
+        //Soldier textures
+        assetManager.load("spritesheets/soldier1/idle/soldieridle.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier1/shoot/soldiershoot.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier2/idle/soldieridle.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier2/shoot/soldiershoot.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier3/idle/soldieridle.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier3/shoot/soldiershoot.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier4/idle/soldieridle.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier4/shoot/soldiershoot.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier5/idle/soldieridle.pack", TextureAtlas.class);
+        assetManager.load("spritesheets/soldier5/shoot/soldiershoot.pack", TextureAtlas.class);
         assetManager.finishLoading();
 
         Music music = assetManager.get("music/ingame1.mp3");
@@ -161,10 +174,6 @@ public class GameScreen extends InputAdapter implements Screen {
         mapRenderer.setView(camera);
         mapRenderer.render();
 
-        //Render hud
-        hud.update(delta);
-        hud.getStage().draw();
-
         //Box2D (Debug Lines)
         if (showDebugLines) box2DDebugRenderer.render(world, camera.combined);
 
@@ -180,6 +189,10 @@ public class GameScreen extends InputAdapter implements Screen {
         towerCreatorListener();
         updateTowers();
         batch.end();
+
+        //Render hud
+        hud.update(delta);
+        hud.getStage().draw();
     }
 
     private void zombieSpawner() {
@@ -196,16 +209,43 @@ public class GameScreen extends InputAdapter implements Screen {
 
     private void towerCreatorListener() {
         if (Gdx.input.justTouched() && hud.getMoney() >= 50) {
-            hud.setMoney(hud.getMoney() - 50);
-            towers.add(new Tower(world, batch, assetManager,
-                    (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - ZombieGame.WIDTH / 2),
-                    (int) ((ZombieGame.HEIGHT - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - ZombieGame.HEIGHT / 2)));
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+                hud.setMoney(hud.getMoney() - 50);
+                towers.add(new Tower(world, batch, assetManager,
+                        (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - ZombieGame.WIDTH / 2),
+                        (int) ((ZombieGame.HEIGHT - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - ZombieGame.HEIGHT / 2)));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+                hud.setMoney(hud.getMoney() - 50);
+                towers.add(new TowerSlow(world, batch, assetManager,
+                        (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - ZombieGame.WIDTH / 2),
+                        (int) ((ZombieGame.HEIGHT - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - ZombieGame.HEIGHT / 2)));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+                hud.setMoney(hud.getMoney() - 50);
+                towers.add(new TowerRanged(world, batch, assetManager,
+                        (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - ZombieGame.WIDTH / 2),
+                        (int) ((ZombieGame.HEIGHT - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - ZombieGame.HEIGHT / 2)));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)) {
+                hud.setMoney(hud.getMoney() - 50);
+                towers.add(new TowerShotgun(world, batch, assetManager,
+                        (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - ZombieGame.WIDTH / 2),
+                        (int) ((ZombieGame.HEIGHT - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - ZombieGame.HEIGHT / 2)));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_5)) {
+                hud.setMoney(hud.getMoney() - 50);
+                towers.add(new TowerMachineGun(world, batch, assetManager,
+                        (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - ZombieGame.WIDTH / 2),
+                        (int) ((ZombieGame.HEIGHT - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - ZombieGame.HEIGHT / 2)));
+            }
         }
     }
 
     private void updateZombieLocations(float delta) {
         for (Zombie individualZombie : zombies) {
-            individualZombie.updateSpritePosition(camera.position.x, camera.position.y);
+            if (gameState.equals(GameState.RUNNING))
+                individualZombie.updateSpritePosition(camera.position.x, camera.position.y);
             individualZombie.draw(delta);
         }
     }
@@ -294,14 +334,20 @@ public class GameScreen extends InputAdapter implements Screen {
         assetManager.unload("music/ingame1.mp3");
         assetManager.unload("sounds/shoot.mp3");
         assetManager.unload("spritesheets/healthbar/healthbar.pack");
+        //Zombie textures
         assetManager.unload("spritesheets/zombie1/zombie1.pack");
         assetManager.unload("spritesheets/zombie2/zombie2.pack");
-        assetManager.unload("spritesheets/soldier1/idle/soldier1idle.pack");
-        assetManager.unload("spritesheets/soldier1/shoot/soldier1shoot.pack");
-        assetManager.unload("spritesheets/soldier2/soldier2.pack");
-        assetManager.unload("spritesheets/soldier3/soldier3.pack");
-        assetManager.unload("spritesheets/soldier4/soldier4.pack");
-        assetManager.unload("spritesheets/soldier5/soldier5.pack");
+        //Soldier textures
+        assetManager.unload("spritesheets/soldier1/idle/soldieridle.pack");
+        assetManager.unload("spritesheets/soldier1/shoot/soldiershoot.pack");
+        assetManager.unload("spritesheets/soldier2/idle/soldieridle.pack");
+        assetManager.unload("spritesheets/soldier2/shoot/soldiershoot.pack");
+        assetManager.unload("spritesheets/soldier3/idle/soldieridle.pack");
+        assetManager.unload("spritesheets/soldier3/shoot/soldiershoot.pack");
+        assetManager.unload("spritesheets/soldier4/idle/soldieridle.pack");
+        assetManager.unload("spritesheets/soldier4/shoot/soldiershoot.pack");
+        assetManager.unload("spritesheets/soldier5/idle/soldieridle.pack");
+        assetManager.unload("spritesheets/soldier5/shoot/soldiershoot.pack");
         map.dispose();
         mapRenderer.dispose();
         world.dispose();
@@ -323,5 +369,13 @@ public class GameScreen extends InputAdapter implements Screen {
 
     public GameState getGameState() {
         return gameState;
+    }
+
+    public ZombieGame getScreenManager() {
+        return screenManager;
+    }
+
+    public void setZombiesSpawned() {
+        zombiesSpawned = 0;
     }
 }
