@@ -22,7 +22,7 @@ public class Box2DObjectCreator {
         this.world = world;
     }
 
-    public void createStaticObjects(MapLayer mapLayer, String layerName) {
+    public void createStaticObjects(MapLayer mapLayer, String layerName, final short category, final short mask) {
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
@@ -38,8 +38,8 @@ public class Box2DObjectCreator {
 
             shape.setAsBox((rectangle.getWidth() / 2) / ZombieGame.PPM, (rectangle.getHeight() / 2) / ZombieGame.PPM);
             fdef.shape = shape;
-            fdef.filter.categoryBits = GameScreen.STATIC_WALL_ENTITY;
-            fdef.filter.maskBits = GameScreen.DYNAMIC_ENTITY;
+            fdef.filter.categoryBits = category;
+            fdef.filter.maskBits = mask;
             Fixture fixture = body.createFixture(fdef);
             if (object.getProperties().get("Direction") != null)
                 fixture.setUserData(object.getProperties().get("Direction"));

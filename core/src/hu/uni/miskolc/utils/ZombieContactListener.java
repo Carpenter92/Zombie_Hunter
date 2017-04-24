@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 
 import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.screens.GameScreen;
-import hu.uni.miskolc.sprites.Zombie;
+import hu.uni.miskolc.sprites.zombies.Zombie;
 
 public class ZombieContactListener implements ContactListener {
 

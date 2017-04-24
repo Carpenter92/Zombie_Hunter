@@ -3,6 +3,7 @@ package hu.uni.miskolc.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -191,6 +192,7 @@ public class PopupWindowManager {
     public void createPausePopup(final ZombieGame screenManager, final GameScreen screen) {
         Image popupWindow = new Image((Texture) assetManager.get("background/popup.png"));
         TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
+        final Sound click = assetManager.get("sounds/buttonclick.mp3");
 
         //Exit
         ImageButton exitButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("exitbutton")),
@@ -198,15 +200,11 @@ public class PopupWindowManager {
         //Continue
         ImageButton continueButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("continuebutton")),
                 new TextureRegionDrawable(buttons.findRegion("continuebuttonpressed")));
-        ImageButton debugButton;
+        ImageButton debugButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("xbutton")),
+                new TextureRegionDrawable(buttons.findRegion("xbuttonpressed")), new TextureRegionDrawable(buttons.findRegion("tickbuttonpressed")));
 
-        if (screen.isShowDebugLines()) {
-            debugButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("tickbutton")),
-                    new TextureRegionDrawable(buttons.findRegion("tickbuttonpressed")), new TextureRegionDrawable(buttons.findRegion("xbutton")));
-        } else {
-            debugButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("xbutton")),
-                    new TextureRegionDrawable(buttons.findRegion("xbuttonpressed")), new TextureRegionDrawable(buttons.findRegion("tickbuttonpressed")));
-        }
+        if (screen.isShowDebugLines())
+            debugButton.setChecked(true);
 
         BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal("fonts/myfont.fnt"));
         Label debugLabel = new Label("Debug lines:", new Label.LabelStyle(bitmapFont, Color.WHITE));
@@ -228,8 +226,8 @@ public class PopupWindowManager {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 stage.getActors().removeRange(stage.getActors().size - 5, stage.getActors().size - 1);
+                click.play(ZombieGame.volume);
                 screen.setState(GameState.RUNNING);
-                MenuScreen.buttonClick.play(ZombieGame.volume);
             }
         });
         exitButton.addListener(new ActorGestureListener() {
@@ -237,13 +235,14 @@ public class PopupWindowManager {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 screenManager.setScreen(new MenuScreen(screenManager));
-                MenuScreen.buttonClick.play(ZombieGame.volume);
+                click.play(ZombieGame.volume);
             }
         });
         debugButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
+                click.play(ZombieGame.volume);
                 if (screen.isShowDebugLines())
                     screen.setShowDebugLines(false);
                 else
@@ -255,29 +254,64 @@ public class PopupWindowManager {
     public void createTowerSelectorPopUp(final GameScreen screen) {
         Image popupWindow = new Image((Texture) assetManager.get("background/popup.png"));
         TextureAtlas buttons = assetManager.get("buttons/buttons.pack");
+        TextureAtlas soldiers = assetManager.get("buyscreen/soldiers.pack");
         ImageButton backButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("backbutton")),
                 new TextureRegionDrawable(buttons.findRegion("backbuttonpressed")));
 
+        ImageButton soldier1Button = new ImageButton(new TextureRegionDrawable(soldiers.getRegions().get(0)),
+                new TextureRegionDrawable(soldiers.getRegions().get(0)));
+        ImageButton soldier2Button = new ImageButton(new TextureRegionDrawable(soldiers.getRegions().get(1)),
+                new TextureRegionDrawable(soldiers.getRegions().get(1)));
+
+        final Sound click = assetManager.get("sounds/buttonclick.mp3");
+
         stage.addActor(popupWindow);
         stage.addActor(backButton);
+        stage.addActor(soldier1Button);
+        stage.addActor(soldier2Button);
+
+        soldier1Button.scaleBy(0.35f);
+        soldier2Button.scaleBy(0.35f);
 
         popupWindow.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+        soldier1Button.setPosition(stage.getWidth() / 2, 3.3f * stage.getHeight() / 5, Align.center);
+        soldier2Button.setPosition(stage.getWidth() / 2, 1.9f * stage.getHeight() / 5, Align.center);
         backButton.setPosition(5 * stage.getWidth() / 10, 1.5f * stage.getHeight() / 10, Align.center);
 
         backButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                stage.getActors().removeRange(stage.getActors().size - 2, stage.getActors().size - 1);
+                stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
                 screen.setState(GameState.RUNNING);
-                MenuScreen.buttonClick.play(ZombieGame.volume);
+                click.play(ZombieGame.volume);
+            }
+        });
+        soldier1Button.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
+                screen.setState(GameState.RUNNING);
+                screen.setPlacableTowerNumber((short) 1);
+                click.play(ZombieGame.volume);
+            }
+        });
+        soldier2Button.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
+                screen.setState(GameState.RUNNING);
+                screen.setPlacableTowerNumber((short) 2);
+                click.play(ZombieGame.volume);
             }
         });
     }
 
     private void resetInGameValues() {
         saveFile.putInteger("currentLivesLeft", 10);
-        saveFile.putInteger("currentWave", 1);
-        saveFile.putInteger("currentMoney", 1000);
+        saveFile.putInteger("currentWave", 0);
+        saveFile.putInteger("currentMoney", 150);
     }
 }

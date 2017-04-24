@@ -1,6 +1,7 @@
 package hu.uni.miskolc.hud;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,6 +25,7 @@ import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.screens.GameScreen;
 import hu.uni.miskolc.states.GameState;
 import hu.uni.miskolc.utils.PopupWindowManager;
+import hu.uni.miskolc.utils.WaveManager;
 
 public class Hud implements Disposable {
 
@@ -39,6 +41,7 @@ public class Hud implements Disposable {
     private Image currentHealth;
     private ImageButton startWaveButton;
     private ImageButton pauseButton;
+    private WaveManager waveManager;
 
     private PopupWindowManager popupWindowManager;
 
@@ -58,9 +61,9 @@ public class Hud implements Disposable {
                 new TextureRegionDrawable(buttons.findRegion("forwardbuttonpressed")));
         pauseButton = new ImageButton(new TextureRegionDrawable(buttons.findRegion("pausegamebutton")),
                 new TextureRegionDrawable(buttons.findRegion("pausegamebuttonpressed")));
-
-        waveLabel = new Label(String.format("%01d", wave), new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/myfont.fnt")), Color.WHITE));
-        moneyLabel = new Label(String.format("%03d", money), new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/myfont.fnt")), Color.WHITE));
+        BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal("fonts/myfont2.fnt"));
+        waveLabel = new Label(String.format("%01d", wave), new Label.LabelStyle(bitmapFont, Color.WHITE));
+        moneyLabel = new Label(String.format("%03d", money), new Label.LabelStyle(bitmapFont, Color.WHITE));
 
         stage.addActor(currentHealth);
         stage.addActor(currentWave);
@@ -86,7 +89,7 @@ public class Hud implements Disposable {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                gameScreen.setZombiesSpawned();
+                gameScreen.setZombiesToSpawn(waveManager.getWave());
                 wave++;
             }
         });
@@ -102,7 +105,6 @@ public class Hud implements Disposable {
                     gameScreen.setState(GameState.RUNNING);
                     stage.getActors().removeRange(stage.getActors().size - 5, stage.getActors().size - 1);
                 }
-
             }
         });
     }
@@ -149,6 +151,10 @@ public class Hud implements Disposable {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public void createWaveManager() {
+        waveManager = new WaveManager(0, money);
     }
 
     @Override

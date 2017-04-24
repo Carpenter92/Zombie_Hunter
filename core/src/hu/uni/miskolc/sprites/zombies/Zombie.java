@@ -1,4 +1,4 @@
-package hu.uni.miskolc.sprites;
+package hu.uni.miskolc.sprites.zombies;
 
 
 import com.badlogic.gdx.Gdx;
@@ -23,31 +23,32 @@ import hu.uni.miskolc.screens.GameScreen;
 
 public class Zombie implements Disposable {
 
-    private static final int B2D_WIDTH = 46;
-    public static final int VELOCITY = 80;
-    private static final float SCALE = 0.86f;
+    static final int B2D_WIDTH = 46;
+    public static int VELOCITY = 80;
+    float SCALE = 0.86f;
+    int health;
 
-    private boolean lookingLeft = false;
+    boolean lookingLeft = false;
 
     private SpriteBatch batch;
-    private Animation<TextureAtlas.AtlasRegion> animation;
+    Animation<TextureAtlas.AtlasRegion> animation;
     private float elapsedTime;
-    private int health;
     private BitmapFont font;
 
     private World world;
     public Body box2dBody;
-    private int atlasRegionWidth, atlasRegionHeight, xPos, yPos;
+    int atlasRegionWidth, atlasRegionHeight;
+    private int xPos, yPos;
 
 
-    public Zombie(World world, SpriteBatch batch, AssetManager assetManager, RectangleMapObject spawnPoint) {
+    public Zombie(World world, SpriteBatch batch, RectangleMapObject spawnPoint) {
         this.world = world;
         this.batch = batch;
         health = 100;
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("fonts/myfont3.fnt"));
 
         defineZombie(spawnPoint);
-        createAnimation(assetManager);
+        createAnimation();
     }
 
     private void defineZombie(RectangleMapObject spawnPoint) {
@@ -63,18 +64,18 @@ public class Zombie implements Disposable {
         CircleShape shape = new CircleShape();
         shape.setRadius(Zombie.B2D_WIDTH / ZombieGame.PPM);
         fdef.shape = shape;
-        fdef.filter.categoryBits = GameScreen.DYNAMIC_ENTITY;
-        fdef.filter.maskBits = GameScreen.STATIC_WALL_ENTITY;
+        fdef.filter.categoryBits = GameScreen.ZOMBIES_MASK;
+        fdef.filter.maskBits = GameScreen.WALLS_MASK;
         Fixture fixture = box2dBody.createFixture(fdef);
         fixture.setUserData("zombie");
         box2dBody.setLinearVelocity(VELOCITY / ZombieGame.PPM, 0);
         shape.dispose();
     }
 
-    private void createAnimation(AssetManager assetManager) {
+    protected void createAnimation() {
         Random rand = new Random(System.currentTimeMillis());
         int randomNum = rand.nextInt(2) + 1;
-        TextureAtlas atlas = assetManager.get("spritesheets/zombie" + randomNum + "/zombie" + randomNum + ".pack");
+        TextureAtlas atlas = ZombieGame.getAssetManager().get("spritesheets/zombie" + randomNum + "/zombie" + randomNum + ".pack");
         animation = new Animation<TextureAtlas.AtlasRegion>(0.12f, atlas.getRegions());
         atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth() * SCALE);
         atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight() * SCALE);
@@ -99,6 +100,7 @@ public class Zombie implements Disposable {
 
     @Override
     public void dispose() {
+        animation = null;
     }
 
     public Body getBox2dBody() {

@@ -1,4 +1,4 @@
-package hu.uni.miskolc.sprites;
+package hu.uni.miskolc.sprites.towers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.screens.GameScreen;
+import hu.uni.miskolc.sprites.zombies.Zombie;
 import hu.uni.miskolc.states.TowerState;
 
 public class Tower implements Disposable {
@@ -100,8 +101,8 @@ public class Tower implements Disposable {
         CircleShape shape = new CircleShape();
         shape.setRadius(Tower.B2D_WIDTH / ZombieGame.PPM);
         fdef.shape = shape;
-        fdef.filter.categoryBits = GameScreen.DYNAMIC_ENTITY;
-        fdef.filter.maskBits = GameScreen.STATIC_WALL_ENTITY;
+        fdef.filter.categoryBits = GameScreen.TOWERS_MASK;
+        fdef.filter.maskBits = GameScreen.OBSTACLES_MASK;
         Fixture fixture = box2dBody.createFixture(fdef);
         fixture.setUserData("tower");
         shape.dispose();

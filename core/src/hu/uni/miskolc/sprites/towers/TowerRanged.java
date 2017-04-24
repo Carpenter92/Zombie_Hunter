@@ -1,4 +1,5 @@
-package hu.uni.miskolc.sprites;
+package hu.uni.miskolc.sprites.towers;
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -10,20 +11,20 @@ import com.badlogic.gdx.utils.Array;
 
 import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.screens.GameScreen;
+import hu.uni.miskolc.sprites.zombies.Zombie;
 import hu.uni.miskolc.states.TowerState;
 
-
-public class TowerShotgun extends Tower {
-    public TowerShotgun(World world, SpriteBatch batch, AssetManager assetManager, int xPos, int yPos) {
+public class TowerRanged extends Tower {
+    public TowerRanged(World world, SpriteBatch batch, AssetManager assetManager, int xPos, int yPos) {
         super(world, batch, assetManager, xPos, yPos);
-        shotDamage = 30;
-        shootInterval = 1.8f;
-        range = (int) (180 / ZombieGame.PPM);
+        shotDamage = 15;
+        shootInterval = 1.1f;
+        range = (int) (300 / ZombieGame.PPM);
     }
 
     protected void createAnimation() {
-        TextureAtlas atlasIdle = ZombieGame.getAssetManager().get("spritesheets/soldier4/idle/soldieridle.pack");
-        TextureAtlas atlasShoot = ZombieGame.getAssetManager().get("spritesheets/soldier4/shoot/soldiershoot.pack");
+        TextureAtlas atlasIdle = ZombieGame.getAssetManager().get("spritesheets/soldier3/idle/soldieridle.pack");
+        TextureAtlas atlasShoot = ZombieGame.getAssetManager().get("spritesheets/soldier3/shoot/soldiershoot.pack");
         animationIdle = new Animation<TextureAtlas.AtlasRegion>(0.5f, atlasIdle.getRegions());
         animationIdle.setPlayMode(Animation.PlayMode.NORMAL);
         animationShooting = new Animation<TextureAtlas.AtlasRegion>(shootInterval / 10, atlasShoot.getRegions());
@@ -63,5 +64,4 @@ public class TowerShotgun extends Tower {
                 state = TowerState.IDLE;
         }
     }
-
 }
