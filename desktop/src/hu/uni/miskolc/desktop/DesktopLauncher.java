@@ -10,7 +10,7 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = (int) ZombieGame.WIDTH;
         config.height = (int) ZombieGame.HEIGHT;
-        //config.fullscreen = true;
+        config.useGL30 = true;
         new LwjglApplication(new ZombieGame(), config);
     }
 }

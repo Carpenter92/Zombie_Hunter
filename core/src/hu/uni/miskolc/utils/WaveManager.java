@@ -37,15 +37,22 @@ public class WaveManager {
     private void generateWave() {
         Random random = new Random(System.currentTimeMillis());
         int playerMoneyStacked = playerMoney / 200;
-        double actualWaveDifficulty = (Math.pow(DIFFICULTY_MODIFIER, wave) * WAVE_DIFFICULTY) + playerMoneyStacked * 100;
+        double actualWaveDifficulty = (Math.pow(DIFFICULTY_MODIFIER, wave)
+                * WAVE_DIFFICULTY) + playerMoneyStacked * 100;
         int currentWaveDifficulty = 0;
 
-        int standardZombies = random.nextInt(MAX_STANDARD_ZOMBIES - MIN_STANDARD_ZOMBIES) + MIN_STANDARD_ZOMBIES;
-        int mummyZombies = random.nextInt(MAX_MUMMY_ZOMBIES - MIN_MUMMY_ZOMBIES) + MIN_MUMMY_ZOMBIES;
-        int armoredZombies = random.nextInt(MAX_ARMORED_ZOMBIES - MIN_ARMORED_ZOMBIES) + MIN_ARMORED_ZOMBIES;
-        int fastZombies = random.nextInt(MAX_FAST_ZOMBIES - MIN_FAST_ZOMBIES) + MIN_FAST_ZOMBIES;
-        int heavyZombies = random.nextInt(MAX_HEAVY_ZOMBIES - MIN_HEAVY_ZOMBIES) + MIN_HEAVY_ZOMBIES;
+        int standardZombies = random.nextInt(MAX_STANDARD_ZOMBIES -
+                MIN_STANDARD_ZOMBIES) + MIN_STANDARD_ZOMBIES;
+        int mummyZombies = random.nextInt(MAX_MUMMY_ZOMBIES -
+                MIN_MUMMY_ZOMBIES) + MIN_MUMMY_ZOMBIES;
+        int armoredZombies = random.nextInt(MAX_ARMORED_ZOMBIES -
+                MIN_ARMORED_ZOMBIES) + MIN_ARMORED_ZOMBIES;
+        int fastZombies = random.nextInt(MAX_FAST_ZOMBIES -
+                MIN_FAST_ZOMBIES) + MIN_FAST_ZOMBIES;
+        int heavyZombies = random.nextInt(MAX_HEAVY_ZOMBIES -
+                MIN_HEAVY_ZOMBIES) + MIN_HEAVY_ZOMBIES;
         System.out.println(standardZombies + " " + mummyZombies + " " + armoredZombies + " " + heavyZombies);
+        System.out.println(actualWaveDifficulty);
         while (currentWaveDifficulty < actualWaveDifficulty && standardZombies > 0) {
             zombies.add(ZombieTypes.STANDARD);
             standardZombies--;
@@ -66,6 +73,7 @@ public class WaveManager {
             heavyZombies--;
             currentWaveDifficulty += 300;
         }
+        System.out.println(currentWaveDifficulty);
         System.out.println(zombies);
     }
 

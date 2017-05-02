@@ -25,6 +25,8 @@ public class Zombie implements Disposable {
 
     static final int B2D_WIDTH = 46;
     public static int VELOCITY = 80;
+    public static int FAST_VELOCITY = 100;
+
     float SCALE = 0.86f;
     int health;
 

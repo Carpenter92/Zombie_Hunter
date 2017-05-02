@@ -103,9 +103,11 @@ public class GameScreen extends InputAdapter implements Screen {
 
         //Creating camera and the HUD
         camera = new OrthographicCamera();
-        viewport = new FitViewport(ZombieGame.WIDTH / ZombieGame.PPM, ZombieGame.HEIGHT / ZombieGame.PPM, camera);
+        viewport = new FitViewport(ZombieGame.WIDTH / ZombieGame.PPM,
+                ZombieGame.HEIGHT / ZombieGame.PPM, camera);
         viewport.apply(true);
-        camera.position.set((ZombieGame.WIDTH / 2 + MAP_OFFSET_X) / ZombieGame.PPM, (ZombieGame.HEIGHT / 2 + MAP_OFFSET_Y) / ZombieGame.PPM, 0);
+        camera.position.set((ZombieGame.WIDTH / 2 + MAP_OFFSET_X) / ZombieGame.PPM,
+                (ZombieGame.HEIGHT / 2 + MAP_OFFSET_Y) / ZombieGame.PPM, 0);
         hud = new Hud(this);
         hud.setWave(saveFile.getInteger("currentWave", 0));
         hud.setMoney(saveFile.getInteger("currentMoney", 100));
@@ -187,7 +189,8 @@ public class GameScreen extends InputAdapter implements Screen {
         mapRenderer.render();
 
         //Box2D (Debug Lines)
-        if (showDebugLines) box2DDebugRenderer.render(world, camera.combined);
+        if (showDebugLines)
+            box2DDebugRenderer.render(world, camera.combined);
 
         //Box2D stepping, if game is paused
         if (gameState.equals(GameState.RUNNING)) {
