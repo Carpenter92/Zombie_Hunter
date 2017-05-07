@@ -28,9 +28,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import hu.uni.miskolc.ZombieGame;
 import hu.uni.miskolc.hud.Hud;
 import hu.uni.miskolc.sprites.towers.Tower;
+import hu.uni.miskolc.sprites.towers.TowerMachineGun;
 import hu.uni.miskolc.sprites.towers.TowerRanged;
+import hu.uni.miskolc.sprites.towers.TowerShotgun;
 import hu.uni.miskolc.sprites.zombies.Zombie;
 import hu.uni.miskolc.sprites.zombies.ZombieArmored;
+import hu.uni.miskolc.sprites.zombies.ZombieFast;
 import hu.uni.miskolc.sprites.zombies.ZombieHeavy;
 import hu.uni.miskolc.sprites.zombies.ZombieMummy;
 import hu.uni.miskolc.states.GameState;
@@ -121,6 +124,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
         initializeMap();
         createBox2DWorld();
+        if (hud.getWave() != 0) setUpLoadedGame(saveFile.getInteger("towersPlaced", 0));
     }
 
     private void initializeAssets() {
@@ -178,6 +182,29 @@ public class GameScreen extends InputAdapter implements Screen {
         B2Dcreator.createStaticObjects(map.getLayers().get(3), "base", WALLS_MASK, ZOMBIES_MASK);
     }
 
+    private void setUpLoadedGame(int numberOfTowers) {
+        for (int i = 1; i <= numberOfTowers; i++) {
+            int type = saveFile.getInteger("tower" + i + "Type");
+            int x = saveFile.getInteger("tower" + i + "X");
+            int y = saveFile.getInteger("tower" + i + "Y");
+
+            switch (type) {
+                case 1:
+                    towers.add(new Tower(world, batch, assetManager, x, y));
+                    break;
+                case 2:
+                    towers.add(new TowerRanged(world, batch, assetManager, x, y));
+                    break;
+                case 3:
+                    towers.add(new TowerShotgun(world, batch, assetManager, x, y));
+                    break;
+                case 4:
+                    towers.add(new TowerMachineGun(world, batch, assetManager, x, y));
+                    break;
+            }
+        }
+    }
+
     @Override
     public void render(float delta) {
         clearScreen();
@@ -189,8 +216,9 @@ public class GameScreen extends InputAdapter implements Screen {
         mapRenderer.render();
 
         //Box2D (Debug Lines)
-        if (showDebugLines)
+        if (showDebugLines) {
             box2DDebugRenderer.render(world, camera.combined);
+        }
 
         //Box2D stepping, if game is paused
         if (gameState.equals(GameState.RUNNING)) {
@@ -220,6 +248,9 @@ public class GameScreen extends InputAdapter implements Screen {
                     break;
                 case ARMORED:
                     zombies.add(new ZombieArmored(world, batch, spawnPoint));
+                    break;
+                case FAST:
+                    zombies.add(new ZombieFast(world, batch, spawnPoint));
                     break;
                 case HEAVY:
                     zombies.add(new ZombieHeavy(world, batch, spawnPoint));
@@ -281,6 +312,20 @@ public class GameScreen extends InputAdapter implements Screen {
                             (int) ((Gdx.graphics.getHeight() - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - Gdx.graphics.getHeight() / 2)));
                     placableTowerNumber = 0;
                     break;
+                case 3:
+                    hud.setMoney(hud.getMoney() - 100);
+                    towers.add(new TowerShotgun(world, batch, assetManager,
+                            (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - Gdx.graphics.getWidth() / 2),
+                            (int) ((Gdx.graphics.getHeight() - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - Gdx.graphics.getHeight() / 2)));
+                    placableTowerNumber = 0;
+                    break;
+                case 4:
+                    hud.setMoney(hud.getMoney() - 150);
+                    towers.add(new TowerMachineGun(world, batch, assetManager,
+                            (int) (Gdx.input.getX() + (camera.position.x * ZombieGame.PPM) - Gdx.graphics.getWidth() / 2),
+                            (int) ((Gdx.graphics.getHeight() - Gdx.input.getY()) + (camera.position.y * ZombieGame.PPM) - Gdx.graphics.getHeight() / 2)));
+                    placableTowerNumber = 0;
+                    break;
             }
         }
         lastTouch.set(screenX, screenY);
@@ -334,7 +379,20 @@ public class GameScreen extends InputAdapter implements Screen {
     public void hide() {
         saveFile.putInteger("currentLivesLeft", hud.getLivesLeft());
         saveFile.putInteger("currentWave", hud.getWave());
-        saveFile.putInteger("currentMoney", hud.getMoney() + towers.size * 50);
+        saveFile.putInteger("currentMoney", hud.getMoney());
+        saveFile.putInteger("towersPlaced", towers.size);
+        for (int i = 1; i <= towers.size; i++) {
+            if (towers.get(i - 1) instanceof TowerRanged)
+                saveFile.putInteger("tower" + i + "Type", 2);
+            else if (towers.get(i - 1) instanceof TowerShotgun)
+                saveFile.putInteger("tower" + i + "Type", 3);
+            else if (towers.get(i - 1) instanceof TowerMachineGun)
+                saveFile.putInteger("tower" + i + "Type", 4);
+            else if (towers.get(i - 1) != null)
+                saveFile.putInteger("tower" + i + "Type", 1);
+            saveFile.putInteger("tower" + i + "X", towers.get(i - 1).getxPos());
+            saveFile.putInteger("tower" + i + "Y", towers.get(i - 1).getyPos());
+        }
         saveFile.flush();
         music.stop();
         dispose();
@@ -406,6 +464,7 @@ public class GameScreen extends InputAdapter implements Screen {
     public boolean isShowDebugLines() {
         return showDebugLines;
     }
+
     public void setShowDebugLines(boolean showDebugLines) {
         this.showDebugLines = showDebugLines;
     }

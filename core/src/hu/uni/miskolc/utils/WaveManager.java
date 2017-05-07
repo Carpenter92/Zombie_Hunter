@@ -51,7 +51,7 @@ public class WaveManager {
                 MIN_FAST_ZOMBIES) + MIN_FAST_ZOMBIES;
         int heavyZombies = random.nextInt(MAX_HEAVY_ZOMBIES -
                 MIN_HEAVY_ZOMBIES) + MIN_HEAVY_ZOMBIES;
-        System.out.println(standardZombies + " " + mummyZombies + " " + armoredZombies + " " + heavyZombies);
+        System.out.println(standardZombies + " " + mummyZombies + " " + armoredZombies + " " + fastZombies + " " + heavyZombies);
         System.out.println(actualWaveDifficulty);
         while (currentWaveDifficulty < actualWaveDifficulty && standardZombies > 0) {
             zombies.add(ZombieTypes.STANDARD);
@@ -68,8 +68,13 @@ public class WaveManager {
             armoredZombies--;
             currentWaveDifficulty += 150;
         }
+        while (currentWaveDifficulty < actualWaveDifficulty && fastZombies > 0) {
+            zombies.add(ZombieTypes.FAST);
+            fastZombies--;
+            currentWaveDifficulty += 100;
+        }
         while (currentWaveDifficulty < actualWaveDifficulty && heavyZombies > 0) {
-            zombies.add(ZombieTypes.ARMORED);
+            zombies.add(ZombieTypes.HEAVY);
             heavyZombies--;
             currentWaveDifficulty += 300;
         }

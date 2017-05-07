@@ -1,6 +1,5 @@
 package hu.uni.miskolc.sprites.zombies;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,7 +11,7 @@ import hu.uni.miskolc.ZombieGame;
 public class ZombieArmored extends Zombie {
     public ZombieArmored(World world, SpriteBatch batch, RectangleMapObject spawnPoint) {
         super(world, batch, spawnPoint);
-        health = 150;
+        health = 200;
     }
 
     protected void createAnimation() {

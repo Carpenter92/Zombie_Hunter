@@ -23,24 +23,41 @@ public class ZombieContactListener implements ContactListener {
         if (contact.isTouching()) {
             Fixture fixtureA = contact.getFixtureA();
             Fixture fixtureB = contact.getFixtureB();
-            if (fixtureA.getUserData().equals("base") && fixtureB.getUserData().equals("zombie")) {
+            if (fixtureA.getUserData().equals("base") && (fixtureB.getUserData().equals("zombie") || fixtureB.getUserData().equals("zombiefast"))) {
                 screen.toRemove.add(fixtureB.getBody());
                 screen.getHud().decreaseLives();
             } else {
-                if (fixtureA.getUserData().equals("UP")) {
+                //STD ZOMBIE
+                if (fixtureA.getUserData().equals("UP") && fixtureB.getUserData().equals("zombie")) {
                     fixtureB.getBody().setLinearVelocity(0, Zombie.VELOCITY / ZombieGame.PPM);
                     return;
                 }
-                if (fixtureA.getUserData().equals("DOWN")) {
+                if (fixtureA.getUserData().equals("DOWN") && fixtureB.getUserData().equals("zombie")) {
                     fixtureB.getBody().setLinearVelocity(0, -Zombie.VELOCITY / ZombieGame.PPM);
                     return;
                 }
-                if (fixtureA.getUserData().equals("LEFT")) {
+                if (fixtureA.getUserData().equals("LEFT") && fixtureB.getUserData().equals("zombie")) {
                     fixtureB.getBody().setLinearVelocity(-Zombie.VELOCITY / ZombieGame.PPM, 0);
                     return;
                 }
-                if (fixtureA.getUserData().equals("RIGHT")) {
+                if (fixtureA.getUserData().equals("RIGHT") && fixtureB.getUserData().equals("zombie")) {
                     fixtureB.getBody().setLinearVelocity(Zombie.VELOCITY / ZombieGame.PPM, 0);
+                }
+                //FAST ZOMBIE
+                if (fixtureA.getUserData().equals("UP") && fixtureB.getUserData().equals("zombiefast")) {
+                    fixtureB.getBody().setLinearVelocity(0, Zombie.FAST_VELOCITY / ZombieGame.PPM);
+                    return;
+                }
+                if (fixtureA.getUserData().equals("DOWN") && fixtureB.getUserData().equals("zombiefast")) {
+                    fixtureB.getBody().setLinearVelocity(0, -Zombie.FAST_VELOCITY / ZombieGame.PPM);
+                    return;
+                }
+                if (fixtureA.getUserData().equals("LEFT") && fixtureB.getUserData().equals("zombiefast")) {
+                    fixtureB.getBody().setLinearVelocity(-Zombie.FAST_VELOCITY / ZombieGame.PPM, 0);
+                    return;
+                }
+                if (fixtureA.getUserData().equals("RIGHT") && fixtureB.getUserData().equals("zombiefast")) {
+                    fixtureB.getBody().setLinearVelocity(Zombie.FAST_VELOCITY / ZombieGame.PPM, 0);
                 }
             }
         }

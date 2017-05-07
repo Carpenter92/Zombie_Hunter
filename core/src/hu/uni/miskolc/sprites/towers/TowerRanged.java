@@ -19,7 +19,7 @@ public class TowerRanged extends Tower {
         super(world, batch, assetManager, xPos, yPos);
         shotDamage = 15;
         shootInterval = 1.1f;
-        range = (int) (300 / ZombieGame.PPM);
+        range = (int) (310 / ZombieGame.PPM);
     }
 
     protected void createAnimation() {

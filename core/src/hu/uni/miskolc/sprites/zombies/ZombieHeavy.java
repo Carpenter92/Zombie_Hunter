@@ -11,13 +11,13 @@ import hu.uni.miskolc.ZombieGame;
 public class ZombieHeavy extends Zombie {
     public ZombieHeavy(World world, SpriteBatch batch, RectangleMapObject spawnPoint) {
         super(world, batch, spawnPoint);
-        health = 300;
+        health = 800;
     }
 
     protected void createAnimation() {
-        TextureAtlas atlas = ZombieGame.getAssetManager().get("spritesheets/zombiearmored/zombiearmored.pack");
+        TextureAtlas atlas = ZombieGame.getAssetManager().get("spritesheets/zombieheavy/zombieheavy.pack");
         animation = new Animation<TextureAtlas.AtlasRegion>(0.10f, atlas.getRegions());
-        atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth() * SCALE / 2);
-        atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight() * SCALE / 2);
+        atlasRegionWidth = (int) (atlas.getRegions().first().getRegionWidth() * SCALE / 1.3);
+        atlasRegionHeight = (int) (atlas.getRegions().first().getRegionHeight() * SCALE / 1.3);
     }
 }

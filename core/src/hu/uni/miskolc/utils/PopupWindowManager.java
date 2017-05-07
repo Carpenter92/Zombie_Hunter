@@ -262,6 +262,10 @@ public class PopupWindowManager {
                 new TextureRegionDrawable(soldiers.getRegions().get(0)));
         ImageButton soldier2Button = new ImageButton(new TextureRegionDrawable(soldiers.getRegions().get(1)),
                 new TextureRegionDrawable(soldiers.getRegions().get(1)));
+        ImageButton soldier3Button = new ImageButton(new TextureRegionDrawable(soldiers.getRegions().get(2)),
+                new TextureRegionDrawable(soldiers.getRegions().get(2)));
+        ImageButton soldier4Button = new ImageButton(new TextureRegionDrawable(soldiers.getRegions().get(3)),
+                new TextureRegionDrawable(soldiers.getRegions().get(3)));
 
         final Sound click = assetManager.get("sounds/buttonclick.mp3");
 
@@ -269,20 +273,27 @@ public class PopupWindowManager {
         stage.addActor(backButton);
         stage.addActor(soldier1Button);
         stage.addActor(soldier2Button);
+        stage.addActor(soldier3Button);
+        stage.addActor(soldier4Button);
 
-        soldier1Button.scaleBy(0.35f);
-        soldier2Button.scaleBy(0.35f);
+        popupWindow.setScale(1.4f, 1.1f);
+        soldier1Button.scaleBy(0.1f);
+        soldier2Button.scaleBy(0.1f);
+        soldier3Button.scaleBy(0.1f);
+        soldier4Button.scaleBy(0.1f);
 
-        popupWindow.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
-        soldier1Button.setPosition(stage.getWidth() / 2, 3.3f * stage.getHeight() / 5, Align.center);
-        soldier2Button.setPosition(stage.getWidth() / 2, 1.9f * stage.getHeight() / 5, Align.center);
+        popupWindow.setPosition(stage.getWidth() / 2 - 150, stage.getHeight() / 2 - 35, Align.center);
+        soldier1Button.setPosition(1.5f * stage.getWidth() / 5, 3.3f * stage.getHeight() / 5, Align.center);
+        soldier2Button.setPosition(3.5f * stage.getWidth() / 5, 3.3f * stage.getHeight() / 5, Align.center);
+        soldier3Button.setPosition(1.5f * stage.getWidth() / 5, 1.9f * stage.getHeight() / 5, Align.center);
+        soldier4Button.setPosition(3.5f * stage.getWidth() / 5, 1.9f * stage.getHeight() / 5, Align.center);
         backButton.setPosition(5 * stage.getWidth() / 10, 1.5f * stage.getHeight() / 10, Align.center);
 
         backButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
+                stage.getActors().removeRange(stage.getActors().size - 6, stage.getActors().size - 1);
                 screen.setState(GameState.RUNNING);
                 click.play(ZombieGame.volume);
             }
@@ -291,7 +302,7 @@ public class PopupWindowManager {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
+                stage.getActors().removeRange(stage.getActors().size - 6, stage.getActors().size - 1);
                 screen.setState(GameState.RUNNING);
                 screen.setPlacableTowerNumber((short) 1);
                 click.play(ZombieGame.volume);
@@ -301,9 +312,29 @@ public class PopupWindowManager {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                stage.getActors().removeRange(stage.getActors().size - 4, stage.getActors().size - 1);
+                stage.getActors().removeRange(stage.getActors().size - 6, stage.getActors().size - 1);
                 screen.setState(GameState.RUNNING);
                 screen.setPlacableTowerNumber((short) 2);
+                click.play(ZombieGame.volume);
+            }
+        });
+        soldier3Button.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                stage.getActors().removeRange(stage.getActors().size - 6, stage.getActors().size - 1);
+                screen.setState(GameState.RUNNING);
+                screen.setPlacableTowerNumber((short) 3);
+                click.play(ZombieGame.volume);
+            }
+        });
+        soldier4Button.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                stage.getActors().removeRange(stage.getActors().size - 6, stage.getActors().size - 1);
+                screen.setState(GameState.RUNNING);
+                screen.setPlacableTowerNumber((short) 4);
                 click.play(ZombieGame.volume);
             }
         });

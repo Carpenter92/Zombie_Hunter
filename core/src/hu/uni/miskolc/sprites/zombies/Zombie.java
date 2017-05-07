@@ -2,7 +2,6 @@ package hu.uni.miskolc.sprites.zombies;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,7 +24,7 @@ public class Zombie implements Disposable {
 
     static final int B2D_WIDTH = 46;
     public static int VELOCITY = 80;
-    public static int FAST_VELOCITY = 100;
+    public static int FAST_VELOCITY = 120;
 
     float SCALE = 0.86f;
     int health;
@@ -69,8 +68,13 @@ public class Zombie implements Disposable {
         fdef.filter.categoryBits = GameScreen.ZOMBIES_MASK;
         fdef.filter.maskBits = GameScreen.WALLS_MASK;
         Fixture fixture = box2dBody.createFixture(fdef);
-        fixture.setUserData("zombie");
-        box2dBody.setLinearVelocity(VELOCITY / ZombieGame.PPM, 0);
+        if (this instanceof ZombieFast) {
+            fixture.setUserData("zombiefast");
+            box2dBody.setLinearVelocity(FAST_VELOCITY / ZombieGame.PPM, 0);
+        } else {
+            fixture.setUserData("zombie");
+            box2dBody.setLinearVelocity(VELOCITY / ZombieGame.PPM, 0);
+        }
         shape.dispose();
     }
 
@@ -97,7 +101,7 @@ public class Zombie implements Disposable {
             batch.draw(animation.getKeyFrame(elapsedTime, true), xPos + atlasRegionWidth, yPos, -atlasRegionWidth, atlasRegionHeight);
         else
             batch.draw(animation.getKeyFrame(elapsedTime, true), xPos, yPos, atlasRegionWidth, atlasRegionHeight);
-        font.draw(batch, health + " HP", xPos, yPos);
+        font.draw(batch, health + " HP", xPos + 15, yPos);
     }
 
     @Override

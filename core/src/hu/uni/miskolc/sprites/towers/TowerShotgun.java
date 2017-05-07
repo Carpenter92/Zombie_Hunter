@@ -17,9 +17,9 @@ import hu.uni.miskolc.states.TowerState;
 public class TowerShotgun extends Tower {
     public TowerShotgun(World world, SpriteBatch batch, AssetManager assetManager, int xPos, int yPos) {
         super(world, batch, assetManager, xPos, yPos);
-        shotDamage = 30;
-        shootInterval = 1.8f;
-        range = (int) (180 / ZombieGame.PPM);
+        shotDamage = 50;
+        shootInterval = 1.9f;
+        range = (int) (200 / ZombieGame.PPM);
     }
 
     protected void createAnimation() {

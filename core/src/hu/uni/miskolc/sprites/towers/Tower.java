@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -33,23 +34,29 @@ public class Tower implements Disposable {
     int range;
     float shootInterval;
     boolean lookingLeft;
+    int levelOfTower = 1;
     TowerState state;
+    private BitmapFont font;
 
     private World world;
     Body box2dBody;
     Sound shootSound;
 
     int atlasRegionWidth, atlasRegionHeight;
-    private int xPos, yPos;
+    private int xPos, yPos, spawnX, spawnY;
 
     public Tower(World world, SpriteBatch batch, AssetManager assetManager, int xPos, int yPos) {
+        font = new BitmapFont(Gdx.files.internal("fonts/myfont3.fnt"));
         this.world = world;
         this.batch = batch;
         this.xPos = xPos;
         this.yPos = yPos;
+        spawnX = xPos;
+        spawnY = yPos;
+        System.out.println(xPos + " " + yPos);
         shotDamage = 10;
         shootInterval = 1.0f;
-        range = (int) (210 / ZombieGame.PPM);
+        range = (int) (220 / ZombieGame.PPM);
         lookingLeft = false;
         defineTower();
         state = TowerState.IDLE;
@@ -144,6 +151,15 @@ public class Tower implements Disposable {
             else
                 batch.draw(animationShooting.getKeyFrame(elapsedTime, false), xPos + atlasRegionWidth, yPos, -atlasRegionWidth, atlasRegionHeight);
         }
+        font.draw(batch, levelOfTower + ". lvl", xPos + 30, yPos);
+    }
+
+    public int getxPos() {
+        return spawnX;
+    }
+
+    public int getyPos() {
+        return spawnY;
     }
 
     @Override

@@ -17,7 +17,7 @@ import hu.uni.miskolc.states.TowerState;
 public class TowerMachineGun extends Tower {
     public TowerMachineGun(World world, SpriteBatch batch, AssetManager assetManager, int xPos, int yPos) {
         super(world, batch, assetManager, xPos, yPos);
-        shotDamage = 3;
+        shotDamage = 10;
         shootInterval = 0.2f;
     }
 
